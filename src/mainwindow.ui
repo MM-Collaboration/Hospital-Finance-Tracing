@@ -435,9 +435,10 @@
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
-     <string>&amp;Спарвка</string>
+     <string>&amp;Справка</string>
     </property>
-    <addaction name="action_Hospital_Finance_Tracing"/>
+    <addaction name="action_aboutQt"/>
+    <addaction name="action_about"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -481,14 +482,19 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="action_Hospital_Finance_Tracing">
+  <action name="action_about">
    <property name="text">
-    <string>О программе &amp;Hospital Finance Tracing</string>
+    <string>&amp;О программе &amp;Hospital Finance Tracing</string>
    </property>
   </action>
   <action name="action">
    <property name="text">
     <string>Экспортировать статистику как...</string>
+   </property>
+  </action>
+  <action name="action_aboutQt">
+   <property name="text">
+    <string>О Qt</string>
    </property>
   </action>
  </widget>

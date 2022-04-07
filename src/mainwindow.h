@@ -14,21 +14,23 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+protected:
+
 private slots:
     void btnAddDoctorClicked();
 
     // Actions
     void actionOpenFile();
-
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    void actionAbout();
 
 private:
     Ui::MainWindow *ui;
 
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
-//    QSqlTableModel *doctorsModel;
 };
 #endif // MAINWINDOW_H
