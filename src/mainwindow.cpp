@@ -13,6 +13,61 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->action_about, &QAction::triggered, this, &MainWindow::actionAbout);
     connect(ui->action_aboutQt, &QAction::triggered, this, QApplication::aboutQt);
 
+    openDatabase();
+    if (!db.open()) {
+        QMessageBox::warning(this, "Ошибка открытия базы данных", "Не удалось открыть базу данных");
+    } else {
+        loadTableDoctors();
+        loadTablePatients();
+        loadTableVisits();
+    }
+}
+
+void MainWindow::loadTableDoctors() {
+    doctorsModel = new QSqlTableModel();
+    doctorsModel->setTable("doctors");
+    doctorsModel->select();
+    doctorsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    doctorsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
+    doctorsModel->setHeaderData(2, Qt::Horizontal, tr("Специализация"));
+    doctorsModel->setHeaderData(3, Qt::Horizontal, tr("Квалификация"));
+    ui->tableView_doctors->setModel(doctorsModel);
+    ui->tableView_doctors->hideColumn(0);
+}
+
+void MainWindow::loadTablePatients() {
+    patientsModel = new QSqlTableModel();
+    patientsModel->setTable("patients");
+    patientsModel->select();
+    patientsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    patientsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
+    patientsModel->setHeaderData(2, Qt::Horizontal, tr("Год рождения"));
+    ui->tableView_patients->setModel(patientsModel);
+    ui->tableView_patients->hideColumn(0);
+}
+
+void MainWindow::loadTableVisits() {
+    visitsModel = new QSqlTableModel();
+    visitsModel->setTable("visits");
+    visitsModel->select();
+    visitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    visitsModel->setHeaderData(1, Qt::Horizontal, tr("Врач"));
+    visitsModel->setHeaderData(2, Qt::Horizontal, tr("Пациент"));
+    visitsModel->setHeaderData(3, Qt::Horizontal, tr("Диагноз"));
+    visitsModel->setHeaderData(4, Qt::Horizontal, tr("Повторный"));
+    visitsModel->setHeaderData(5, Qt::Horizontal, tr("Цена"));
+    ui->tableView_visits->setModel(visitsModel);
+    ui->tableView_visits->hideColumn(0);
+}
+
+void MainWindow::openDatabase() {
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("localhost");
+    db.setDatabaseName("hospital");
+    db.setPort(3306);
+    db.setUserName("root");
+    db.setPassword("");
+    db.open();
 }
 
 void MainWindow::btnAddDoctorClicked() {
@@ -39,6 +94,7 @@ void MainWindow::actionAbout() {
 
 MainWindow::~MainWindow()
 {
+    db.close();
     delete ui;
 }
 

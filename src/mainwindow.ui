@@ -57,104 +57,13 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="tableWidget">
+         <widget class="QTableView" name="tableView_visits">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Sunken</enum>
           </property>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>120</number>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-           <bool>false</bool>
-          </attribute>
-          <row>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </row>
-          <column>
-           <property name="text">
-            <string>Дата</string>
-           </property>
-           <property name="textAlignment">
-            <set>AlignLeading|AlignTop</set>
-           </property>
-           <property name="background">
-            <color>
-             <red>255</red>
-             <green>255</green>
-             <blue>255</blue>
-            </color>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Врач</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Пациент</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Диагноз</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Повторный</string>
-           </property>
-           <property name="background">
-            <color>
-             <red>255</red>
-             <green>255</green>
-             <blue>255</blue>
-            </color>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Стоимость</string>
-           </property>
-          </column>
-          <item row="0" column="0">
-           <property name="text">
-            <string>12.12.2021</string>
-           </property>
-          </item>
-          <item row="0" column="1">
-           <property name="text">
-            <string>Гончаров Л. М.</string>
-           </property>
-          </item>
-          <item row="0" column="2">
-           <property name="text">
-            <string>Суханов Р. Ф.</string>
-           </property>
-          </item>
-          <item row="0" column="3">
-           <property name="text">
-            <string>ОРВИ</string>
-           </property>
-          </item>
-          <item row="0" column="4">
-           <property name="text">
-            <string>+</string>
-           </property>
-          </item>
-          <item row="0" column="5">
-           <property name="text">
-            <string>2000</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
@@ -196,86 +105,10 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="tableWidget_doctors">
+         <widget class="QTableView" name="tableView_doctors">
           <property name="autoScrollMargin">
            <number>16</number>
           </property>
-          <property name="gridStyle">
-           <enum>Qt::SolidLine</enum>
-          </property>
-          <property name="sortingEnabled">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderCascadingSectionResizes">
-           <bool>true</bool>
-          </attribute>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>60</number>
-          </attribute>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>144</number>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderCascadingSectionResizes">
-           <bool>true</bool>
-          </attribute>
-          <row>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>2</string>
-           </property>
-          </row>
-          <column>
-           <property name="text">
-            <string>ФИО</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Специальность</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Квалификация</string>
-           </property>
-          </column>
-          <item row="0" column="0">
-           <property name="text">
-            <string>Суханов Р. Ф.</string>
-           </property>
-          </item>
-          <item row="0" column="1">
-           <property name="text">
-            <string>Ортопед</string>
-           </property>
-          </item>
-          <item row="0" column="2">
-           <property name="text">
-            <string>Кандидат наук</string>
-           </property>
-          </item>
-          <item row="1" column="0">
-           <property name="text">
-            <string>Абрамова С. К.</string>
-           </property>
-          </item>
-          <item row="1" column="1">
-           <property name="text">
-            <string>Отоларинголог</string>
-           </property>
-          </item>
-          <item row="1" column="2">
-           <property name="text">
-            <string>Врач-специалист</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
@@ -317,56 +150,10 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="tableWidget_6">
+         <widget class="QTableView" name="tableView_patients">
           <property name="autoScrollMargin">
            <number>16</number>
           </property>
-          <property name="gridStyle">
-           <enum>Qt::SolidLine</enum>
-          </property>
-          <property name="sortingEnabled">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderCascadingSectionResizes">
-           <bool>true</bool>
-          </attribute>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>60</number>
-          </attribute>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>120</number>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderCascadingSectionResizes">
-           <bool>true</bool>
-          </attribute>
-          <row>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </row>
-          <column>
-           <property name="text">
-            <string>ФИО</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Год рождения</string>
-           </property>
-          </column>
-          <item row="0" column="0">
-           <property name="text">
-            <string>Суханов Р. Ф.</string>
-           </property>
-          </item>
-          <item row="0" column="1">
-           <property name="text">
-            <string>1985</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
