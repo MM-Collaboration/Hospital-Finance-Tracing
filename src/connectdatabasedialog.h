@@ -31,12 +31,6 @@ private slots:
 
 private:
     Ui::ConnectDatabaseDialog *ui;
-
-//    QString *hostName;
-//    QString *port;
-//    QString *databaseName;
-//    QString *userName;
-//    QString *password;
 };
 
 #endif // CONNECTDATABASEDIALOG_H

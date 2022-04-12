@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->action_aboutQt, &QAction::triggered, this, QApplication::aboutQt);
     connect(ui->action_connectDatabase, &QAction::triggered, this, &MainWindow::createConnectDatabaseDialog);
 
+    // need to connect with QSettings
     openDatabase();
     loadDatabase();
 

@@ -24,24 +24,3 @@ ConnectDatabaseDialog::DatabaseData ConnectDatabaseDialog::getDatabaseData() {
                                                 };
 }
 
-//void ConnectDatabaseDialog::getConnectionData() {
-//    *hostName = ui->lineEdit_hostName->text();
-//    *port = ui->lineEdit_port->text();
-//    *databaseName = ui->lineEdit_databaseName->text();
-//    *userName = ui->lineEdit_userName->text();
-//    *password = ui->lineEdit_password->text();
-//}
-
-//void ConnectDatabaseDialog::on_btn_connectDatabase_clicked() {
-//    if (!hostName.isEmpty() && !port.isEmpty() && !databaseName.isEmpty() && !userName.isEmpty()) {
-//        db = QSqlDatabase::addDatabase("QMYSQL");
-//        db.setHostName("localhost");
-//        db.setDatabaseName("hospital");
-//        db.setPort(3306);
-//        db.setUserName("root");
-//        db.setPassword("");
-//        db.open();
-//    }
-
-//}
-
