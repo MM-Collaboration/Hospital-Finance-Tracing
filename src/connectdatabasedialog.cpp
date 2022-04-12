@@ -23,4 +23,3 @@ ConnectDatabaseDialog::DatabaseData ConnectDatabaseDialog::getDatabaseData() {
                                                 ui->lineEdit_password->text(),
                                                 };
 }
-
