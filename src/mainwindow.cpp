@@ -12,15 +12,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Help menu
     connect(ui->action_about, &QAction::triggered, this, &MainWindow::actionAbout);
     connect(ui->action_aboutQt, &QAction::triggered, this, QApplication::aboutQt);
+    connect(ui->action_connectDatabase, &QAction::triggered, this, &MainWindow::createConnectDatabaseDialog);
 
     openDatabase();
-    if (!db.open()) {
-        QMessageBox::warning(this, "Ошибка открытия базы данных", "Не удалось открыть базу данных");
-    } else {
-        loadTableDoctors();
-        loadTablePatients();
-        loadTableVisits();
-    }
+    loadDatabase();
+
 }
 
 void MainWindow::loadTableDoctors() {
@@ -70,6 +66,16 @@ void MainWindow::openDatabase() {
     db.open();
 }
 
+void MainWindow::loadDatabase() {
+    if (!db.open()) {
+        QMessageBox::warning(this, "Ошибка открытия базы данных", "Не удалось открыть базу данных");
+    } else {
+        loadTableDoctors();
+        loadTablePatients();
+        loadTableVisits();
+    }
+}
+
 void MainWindow::btnAddDoctorClicked() {
     QMessageBox::warning(this,
                          "Hello",
@@ -78,9 +84,12 @@ void MainWindow::btnAddDoctorClicked() {
 
 // Actions
 void MainWindow::actionOpenFile() {
-    QMessageBox::information(this,
-                             "Hey!",
-                             "You have triggered actionOpneFile");
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Open Database"),
+                                                    QDir::homePath(),
+                                                    tr("MariaDB files (*.mwb)"));
+
+    QMessageBox::information(this, "Open database", fileName);
 }
 
 void MainWindow::actionAbout() {
@@ -90,7 +99,21 @@ void MainWindow::actionAbout() {
                        "<p>GitHub: <a href='https://github.com/MM-Collaboration/Hospital-Finance-Tracing'>https://github.com/MM-Collaboration/Hospital-Finance-Tracing</a></p>");
 }
 
-// Events
+void MainWindow::createConnectDatabaseDialog() {
+    ConnectDatabaseDialog dial;
+    dial.setModal(true);
+    if (dial.exec()) {
+        ConnectDatabaseDialog::DatabaseData data = dial.getDatabaseData();
+        db = QSqlDatabase::addDatabase(data.databaseType);
+        db.setHostName(data.hostName);
+        db.setDatabaseName(data.databaseName);
+        db.setPort(data.port);
+        db.setUserName(data.userName);
+        db.setPassword(data.password);
+        db.open();
+        loadDatabase();
+    }
+}
 
 MainWindow::~MainWindow()
 {

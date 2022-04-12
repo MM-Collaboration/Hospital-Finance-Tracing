@@ -216,6 +216,7 @@
     <addaction name="action_openFile"/>
     <addaction name="action_saveFileAs"/>
     <addaction name="separator"/>
+    <addaction name="action_connectDatabase"/>
     <addaction name="action"/>
     <addaction name="separator"/>
     <addaction name="action_exit"/>
@@ -284,6 +285,11 @@
     <string>О Qt</string>
    </property>
   </action>
+  <action name="action_connectDatabase">
+   <property name="text">
+    <string>Подключить базу данных</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -291,7 +297,7 @@
    <sender>action_exit</sender>
    <signal>triggered(bool)</signal>
    <receiver>MainWindow</receiver>
-   <slot>deleteLater()</slot>
+   <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -304,4 +310,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>createConnectDatabaseDialog()</slot>
+ </slots>
 </ui>

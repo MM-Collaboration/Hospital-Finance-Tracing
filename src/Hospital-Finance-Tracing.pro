@@ -9,13 +9,16 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    connectdatabasedialog.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    connectdatabasedialog.h \
     mainwindow.h
 
 FORMS += \
+    connectdatabasedialog.ui \
     mainwindow.ui \
     ui_base/add_diolog.ui \
     ui_base/add_doctor_diolog.ui \
