@@ -1,8 +1,9 @@
 #ifndef CONNECTDATABASEDIALOG_H
 #define CONNECTDATABASEDIALOG_H
 
+#include "mainwindow.h"
+
 #include <QDialog>
-#include <QSqlDatabase>
 
 namespace Ui {
 class ConnectDatabaseDialog;
@@ -16,16 +17,20 @@ public:
     explicit ConnectDatabaseDialog();
     ~ConnectDatabaseDialog();
 
-    struct DatabaseData {
-        QString databaseType;
-        QString hostName;
-        int port;
-        QString databaseName;
-        QString userName;
-        QString password;
-    };
+    QString getDBType();
+    QString getHostName();
+    int getPort();
+    QString getDatabaseName();
+    QString getUserName();
+    QString getPassword();
 
-    DatabaseData getDatabaseData();
+    void setDBType(QString type);
+    void setHostName(QString hostName);
+    void setDatabaseName(QString databaseName);
+    void setPort(int port);
+    void setUserName(QString username);
+    void setPassword(QString password);
+
 
 private slots:
 

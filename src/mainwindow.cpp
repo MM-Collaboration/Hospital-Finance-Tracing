@@ -14,10 +14,23 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->action_aboutQt, &QAction::triggered, this, QApplication::aboutQt);
     connect(ui->action_connectDatabase, &QAction::triggered, this, &MainWindow::createConnectDatabaseDialog);
 
+    connectDatabase();
     // need to connect with QSettings
-    openDatabase();
-    loadDatabase();
+//    openDatabase();
+//    loadDatabase();
 
+}
+
+MainWindow::~MainWindow()
+{
+    db.close();
+    delete ui;
+}
+
+void MainWindow::connectDatabase() {
+    createConnectDatabaseDialog();
+    db.open();
+    loadDatabase();
 }
 
 void MainWindow::loadTableDoctors() {
@@ -57,7 +70,9 @@ void MainWindow::loadTableVisits() {
     ui->tableView_visits->hideColumn(0);
 }
 
-void MainWindow::openDatabase() {
+// Only for development
+// Recommend to add db options to ENV
+void MainWindow::quickOpenDatabase() {
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setDatabaseName("hospital");
@@ -100,25 +115,25 @@ void MainWindow::actionAbout() {
                        "<p>GitHub: <a href='https://github.com/MM-Collaboration/Hospital-Finance-Tracing'>https://github.com/MM-Collaboration/Hospital-Finance-Tracing</a></p>");
 }
 
-void MainWindow::createConnectDatabaseDialog() {
+ void MainWindow::createConnectDatabaseDialog() {
     ConnectDatabaseDialog dial;
     dial.setModal(true);
-    if (dial.exec()) {
-        ConnectDatabaseDialog::DatabaseData data = dial.getDatabaseData();
-        db = QSqlDatabase::addDatabase(data.databaseType);
-        db.setHostName(data.hostName);
-        db.setDatabaseName(data.databaseName);
-        db.setPort(data.port);
-        db.setUserName(data.userName);
-        db.setPassword(data.password);
-        db.open();
-        loadDatabase();
+    // Set current db options to dialog
+    if (!(db.driverName().isEmpty())) {
+        dial.setDBType(db.driverName());
+        dial.setHostName(db.hostName());
+        dial.setPort(db.port());
+        dial.setDatabaseName(db.databaseName());
+        dial.setUserName(db.userName());
+    }
+
+    // Set db options from dialog
+    if (dial.QDialog::exec()) {
+        db = QSqlDatabase::addDatabase(dial.getDBType());
+        db.setHostName(dial.getHostName());
+        db.setPort(dial.getPort());
+        db.setDatabaseName(dial.getDatabaseName());
+        db.setUserName(dial.getUserName());
+        db.setPassword(dial.getPassword());
     }
 }
-
-MainWindow::~MainWindow()
-{
-    db.close();
-    delete ui;
-}
-

@@ -23,7 +23,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void openDatabase();
+    void quickOpenDatabase();
 
     void loadDatabase();
 
@@ -32,6 +32,8 @@ public:
     void loadTablePatients();
 
     void loadTableVisits();
+
+    void connectDatabase();
 
 
 protected:
@@ -53,12 +55,5 @@ private:
     QSqlTableModel *patientsModel;
     QSqlTableModel *visitsModel;
     QSqlDatabase db;
-
-    // Database vars
-    QString *DBHostName;
-    QString *DBPort;
-    QString *DBName;
-    QString *DBUserName;
-    QString *DBPassword;
 };
 #endif // MAINWINDOW_H
