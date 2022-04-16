@@ -5,6 +5,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    doctorsModel = nullptr;
+    patientsModel = nullptr;
+    visitsModel = nullptr;
     ui->setupUi(this);
     connect(ui->btn_add_doctor, SIGNAL(released()), this, SLOT(btnAddDoctorClicked()));
     // Connect actions
@@ -28,13 +31,15 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::connectDatabase() {
-    createConnectDatabaseDialog();
+    MainWindow::createConnectDatabaseDialog();
     db.open();
     loadDatabase();
 }
 
 void MainWindow::loadTableDoctors() {
-    doctorsModel = new QSqlTableModel();
+    if (doctorsModel == nullptr) {
+        doctorsModel = new QSqlTableModel();
+    }
     doctorsModel->setTable("doctors");
     doctorsModel->select();
     doctorsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -46,7 +51,9 @@ void MainWindow::loadTableDoctors() {
 }
 
 void MainWindow::loadTablePatients() {
-    patientsModel = new QSqlTableModel();
+    if (patientsModel == nullptr) {
+        patientsModel = new QSqlTableModel();
+    }
     patientsModel->setTable("patients");
     patientsModel->select();
     patientsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -57,7 +64,9 @@ void MainWindow::loadTablePatients() {
 }
 
 void MainWindow::loadTableVisits() {
-    visitsModel = new QSqlTableModel();
+    if (visitsModel == nullptr) {
+        visitsModel = new QSqlTableModel();
+    }
     visitsModel->setTable("visits");
     visitsModel->select();
     visitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
