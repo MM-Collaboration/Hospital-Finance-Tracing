@@ -2,6 +2,7 @@
 #define CONNECTDATABASEDIALOG_H
 
 #include <QDialog>
+#include <QPushButton>
 
 namespace Ui {
 class ConnectDatabaseDialog;
@@ -29,8 +30,8 @@ public:
     void setUserName(QString username);
     void setPassword(QString password);
 
-
 private slots:
+    void on_lineEdit_databaseName_textChanged();
 
 private:
     Ui::ConnectDatabaseDialog *ui;

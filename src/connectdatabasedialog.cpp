@@ -6,6 +6,7 @@ ConnectDatabaseDialog::ConnectDatabaseDialog() :
     ui(new Ui::ConnectDatabaseDialog)
 {
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 
 ConnectDatabaseDialog::~ConnectDatabaseDialog()
@@ -49,6 +50,11 @@ void ConnectDatabaseDialog::setHostName(QString hostName) {
 }
 
 void ConnectDatabaseDialog::setDatabaseName(QString databaseName) {
+    bool enableButtonOk = false;
+    if (databaseName.isEmpty()) {
+        enableButtonOk = true;
+    }
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(enableButtonOk);
     ui->lineEdit_databaseName->setText(databaseName);
 }
 
@@ -63,3 +69,12 @@ void ConnectDatabaseDialog::setUserName(QString username) {
 void ConnectDatabaseDialog::setPassword(QString password) {
     ui->lineEdit_password->setText(password);
 }
+
+void ConnectDatabaseDialog::on_lineEdit_databaseName_textChanged() {
+    bool enableButtonOk = false;
+    if (!ui->lineEdit_databaseName->text().isEmpty()) {
+        enableButtonOk = true;
+    }
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(enableButtonOk);
+}
+
