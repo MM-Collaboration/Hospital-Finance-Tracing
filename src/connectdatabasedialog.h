@@ -1,8 +1,6 @@
 #ifndef CONNECTDATABASEDIALOG_H
 #define CONNECTDATABASEDIALOG_H
 
-#include "mainwindow.h"
-
 #include <QDialog>
 
 namespace Ui {
