@@ -120,7 +120,7 @@ void MainWindow::actionOpenFile() {
 void MainWindow::actionAbout() {
     QMessageBox::about(this,
                        "О Hospital Finance Tracing",
-                       "<p><b>Hospital Finance Tracing</b> - программа для сбора финансовой статистик поликлинники</p>"
+                       "<p><b>Hospital Finance Tracing</b> - программа для сбора финансовой статистики поликлиники</p>"
                        "<p>GitHub: <a href='https://github.com/MM-Collaboration/Hospital-Finance-Tracing'>https://github.com/MM-Collaboration/Hospital-Finance-Tracing</a></p>");
 }
 
