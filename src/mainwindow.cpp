@@ -9,6 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
     patientsModel = nullptr;
     visitsModel = nullptr;
     ui->setupUi(this);
+
+    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("[0-9]{11}"), ui->lineEdit_phoneNumberPatient));
+
     connect(ui->btn_add_doctor, SIGNAL(released()), this, SLOT(btnAddDoctorClicked()));
     // Connect actions
     connect(ui->action_openFile, &QAction::triggered, this, &MainWindow::actionOpenFile);
