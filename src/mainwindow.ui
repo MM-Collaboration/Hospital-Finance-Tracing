@@ -665,6 +665,31 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>tableView_patients</tabstop>
+  <tabstop>lineEdit_fullNamePatient</tabstop>
+  <tabstop>dateEdit_yearOfBirthDoctor</tabstop>
+  <tabstop>lineEdit_phoneNumberPatient</tabstop>
+  <tabstop>btn_edit_patient</tabstop>
+  <tabstop>btn_add_patient</tabstop>
+  <tabstop>btn_add_doctor</tabstop>
+  <tabstop>btn_edit_appointment</tabstop>
+  <tabstop>comboBox_qualification</tabstop>
+  <tabstop>comboBox_11</tabstop>
+  <tabstop>lineEdit_fullNameDoctor</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>btn_add_appointment</tabstop>
+  <tabstop>tableView_doctors</tabstop>
+  <tabstop>btn_edit_doctor</tabstop>
+  <tabstop>comboBox_vistDoctor</tabstop>
+  <tabstop>tableView_visits</tabstop>
+  <tabstop>listView</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>comboBox_2</tabstop>
+  <tabstop>btn_updateStat</tabstop>
+  <tabstop>comboBox_vistPatient</tabstop>
+  <tabstop>calendarWidget_visit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

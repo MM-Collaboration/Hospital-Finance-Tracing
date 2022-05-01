@@ -10,7 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     visitsModel = nullptr;
     ui->setupUi(this);
 
-    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("[0-9]{11}"), ui->lineEdit_phoneNumberPatient));
+    fullNameRegExp = new QRegExp("[A-z,А-я, ,.]{40}");
+    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("[0-9]{11}\\-"), ui->lineEdit_phoneNumberPatient));
+    ui->lineEdit_fullNamePatient->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNamePatient));
 
     connect(ui->btn_add_doctor, SIGNAL(released()), this, SLOT(btnAddDoctorClicked()));
     // Connect actions

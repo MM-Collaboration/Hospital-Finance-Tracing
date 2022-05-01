@@ -56,5 +56,8 @@ private:
     QSqlTableModel *patientsModel;
     QSqlTableModel *visitsModel;
     QSqlDatabase db;
+
+    // Regular expresions
+    QRegExp *fullNameRegExp;
 };
 #endif // MAINWINDOW_H
