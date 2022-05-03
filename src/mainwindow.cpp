@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
     mDatabase.setPassword("root");
     if (!mDatabase.open()){
         QMessageBox::critical(this, "Error", mDatabase.lastError().text());
-        return;
     }
     mModel=new QSqlTableModel;
     mModel-> setTable("hospital");
