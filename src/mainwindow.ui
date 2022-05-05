@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>854</width>
-    <height>577</height>
+    <width>1019</width>
+    <height>631</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,38 +24,7 @@
        <attribute name="title">
         <string>Список приёмов</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="btn_add_appointment">
-            <property name="text">
-             <string>Добавить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_edit_appointment">
-            <property name="text">
-             <string>Изменить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,1">
         <item>
          <widget class="QTableView" name="tableView_visits">
           <property name="frameShape">
@@ -66,50 +35,260 @@
           </property>
          </widget>
         </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Врач</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_vistDoctor">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>Алексей</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Андрей</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Пациент</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox_vistPatient">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>Хрущёв Н. С.</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Дата</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCalendarWidget" name="calendarWidget_visit">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::PreventContextMenu</enum>
+            </property>
+            <property name="minimumDate">
+             <date>
+              <year>2022</year>
+              <month>4</month>
+              <day>28</day>
+             </date>
+            </property>
+            <property name="firstDayOfWeek">
+             <enum>Qt::Monday</enum>
+            </property>
+            <property name="gridVisible">
+             <bool>true</bool>
+            </property>
+            <property name="verticalHeaderFormat">
+             <enum>QCalendarWidget::ISOWeekNumbers</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="btn_add_appointment">
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="btn_edit_appointment">
+            <property name="text">
+             <string>Изменить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_doctors_list">
        <attribute name="title">
         <string>Врачи</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
+       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="2,1">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QPushButton" name="btn_add_doctor">
-            <property name="text">
-             <string>Добавить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_edit_doctor">
-            <property name="text">
-             <string>Изменить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
+         <widget class="QTableView" name="tableView_doctors">
+          <property name="inputMethodHints">
+           <set>Qt::ImhNone</set>
+          </property>
+          <property name="autoScrollMargin">
+           <number>16</number>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="showDropIndicator" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="dragDropOverwriteMode">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="6" column="0" colspan="2">
+           <spacer name="verticalSpacer">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
-              <height>20</height>
+              <width>20</width>
+              <height>40</height>
              </size>
             </property>
            </spacer>
           </item>
+          <item row="7" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="btn_edit_doctor">
+              <property name="text">
+               <string>Изменить</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_add_doctor">
+              <property name="text">
+               <string>Добавить</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>ФИО</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_fullNameDoctor"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Специализации</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox_specialization">
+            <item>
+             <property name="text">
+              <string>ЛОР</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Хирург</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Психолог</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Терапевт</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Окулист</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Квалификация</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox_qualification">
+            <item>
+             <property name="text">
+              <string>Вторая</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Первая</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Высшая</string>
+             </property>
+            </item>
+           </widget>
+          </item>
          </layout>
-        </item>
-        <item>
-         <widget class="QTableView" name="tableView_doctors">
-          <property name="autoScrollMargin">
-           <number>16</number>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
@@ -117,38 +296,7 @@
        <attribute name="title">
         <string>Пациенты</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <item>
-           <widget class="QPushButton" name="btn_add_patient">
-            <property name="text">
-             <string>Добавить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_edit_patient">
-            <property name="text">
-             <string>Изменить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="2,0">
         <item>
          <widget class="QTableView" name="tableView_patients">
           <property name="autoScrollMargin">
@@ -156,42 +304,277 @@
           </property>
          </widget>
         </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout_8">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>ФИО</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_fullNamePatient"/>
+          </item>
+          <item row="8" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QPushButton" name="btn_edit_patient">
+              <property name="text">
+               <string>Изменить</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_add_patient">
+              <property name="text">
+               <string>Добавить</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="7" column="0" colspan="2">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Год рождения</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDateEdit" name="dateEdit_yearOfBirthDoctor">
+            <property name="dateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2000</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="maximumDate">
+             <date>
+              <year>2022</year>
+              <month>12</month>
+              <day>31</day>
+             </date>
+            </property>
+            <property name="minimumDate">
+             <date>
+              <year>1900</year>
+              <month>1</month>
+              <day>1</day>
+             </date>
+            </property>
+            <property name="currentSection">
+             <enum>QDateTimeEdit::NoSection</enum>
+            </property>
+            <property name="displayFormat">
+             <string> yyyy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>Телефон</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_phoneNumberPatient">
+            <property name="cursor">
+             <cursorShape>IBeamCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string/>
+            </property>
+            <property name="accessibleName">
+             <string/>
+            </property>
+            <property name="accessibleDescription">
+             <string/>
+            </property>
+            <property name="inputMethodHints">
+             <set>Qt::ImhNone</set>
+            </property>
+            <property name="inputMask">
+             <string/>
+            </property>
+            <property name="maxLength">
+             <number>32767</number>
+            </property>
+            <property name="dragEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="placeholderText">
+             <string>8 900 000-00-00</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_stat">
        <attribute name="title">
         <string>Статистика</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <widget class="QPushButton" name="btn_updateStat">
-            <property name="statusTip">
-             <string>Обновить страницу статистики</string>
-            </property>
-            <property name="text">
-             <string>Обновить</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         <widget class="QListView" name="listView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QTreeView" name="treeView"/>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>Сортировка</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QToolBox" name="toolBox">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <widget class="QWidget" name="page">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>180</width>
+                <height>43</height>
+               </rect>
+              </property>
+              <attribute name="label">
+               <string>По врачам</string>
+              </attribute>
+              <layout class="QFormLayout" name="formLayout_3">
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox">
+                 <item>
+                  <property name="text">
+                   <string>от А до Я</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>от Я до А</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>По фамилии</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="page_2">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>300</width>
+                <height>379</height>
+               </rect>
+              </property>
+              <attribute name="label">
+               <string>По пациентам</string>
+              </attribute>
+              <layout class="QFormLayout" name="formLayout_4">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>по дате</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_2">
+                 <item>
+                  <property name="text">
+                   <string>с новых</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>со старых</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_updateStat">
+                 <property name="statusTip">
+                  <string>Обновить страницу статистики</string>
+                 </property>
+                 <property name="text">
+                  <string>Обновить</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -204,7 +587,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>854</width>
+     <width>1019</width>
      <height>22</height>
     </rect>
    </property>
@@ -294,6 +677,31 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>tableView_patients</tabstop>
+  <tabstop>lineEdit_fullNamePatient</tabstop>
+  <tabstop>dateEdit_yearOfBirthDoctor</tabstop>
+  <tabstop>lineEdit_phoneNumberPatient</tabstop>
+  <tabstop>btn_edit_patient</tabstop>
+  <tabstop>btn_add_patient</tabstop>
+  <tabstop>btn_add_doctor</tabstop>
+  <tabstop>btn_edit_appointment</tabstop>
+  <tabstop>comboBox_qualification</tabstop>
+  <tabstop>comboBox_specialization</tabstop>
+  <tabstop>lineEdit_fullNameDoctor</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>btn_add_appointment</tabstop>
+  <tabstop>tableView_doctors</tabstop>
+  <tabstop>btn_edit_doctor</tabstop>
+  <tabstop>comboBox_vistDoctor</tabstop>
+  <tabstop>tableView_visits</tabstop>
+  <tabstop>listView</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>comboBox_2</tabstop>
+  <tabstop>btn_updateStat</tabstop>
+  <tabstop>comboBox_vistPatient</tabstop>
+  <tabstop>calendarWidget_visit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

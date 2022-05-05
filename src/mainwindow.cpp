@@ -3,6 +3,11 @@
 #include <QSqlTableModel>
 #include <QMessageBox>
 #include <QSqlError>
+<<<<<<< HEAD
+=======
+#include <QSqlRecord>
+#include <QSqlField>
+>>>>>>> refs/remotes/origin/mashanew
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     mDatabase.setDatabaseName("hospital");
     mDatabase.setPort(3306);
     mDatabase.setUserName("root");
+<<<<<<< HEAD
     mDatabase.setPassword("root");
     if (!mDatabase.open()){
         QMessageBox::critical(this, "Error", mDatabase.lastError().text());
@@ -27,6 +33,23 @@ MainWindow::MainWindow(QWidget *parent)
     mModel-> select();
 
     ui-> tableView_visits-> setModel(mModel);
+=======
+    mDatabase.setPassword("");
+    if (!mDatabase.open()){
+        QMessageBox::critical(this, "Error", mDatabase.lastError().text());
+    }
+//    mModel=new QSqlTableModel;
+//    mModel-> setTable("doctors");
+//    mModel-> select();
+
+//    ui->tableView_doctors->setModel(mModel);
+//    loadTableDoctors();
+
+//    ui-> tableView_visits-> setModel(mModel);
+    loadTableDoctors();
+    loadTablePatients();
+    loadTableVisits();
+>>>>>>> refs/remotes/origin/mashanew
 }
 
 MainWindow::~MainWindow()
@@ -117,6 +140,36 @@ void MainWindow::actionAbout() {
 
 void MainWindow::on_btn_add_doctor_clicked()
 {
+<<<<<<< HEAD
     mModel->insertRow(mModel->rowCount());
+=======
+  //  QSqlRecord record = doctorsModel->record();
+    QSqlTableModel model;
+    model.setTable("test_model");
+//    QModelIndex insertIndex = table->currentIndex();H
+//    int row = insertIndex.row() == -1 ? 0 : insertIndex.row();
+    doctorsModel->insertRow(doctorsModel->rowCount());
+    QSqlRecord rec;
+    rec.append(QSqlField("name", QVariant::Char));
+    rec.append(QSqlField("specialization", QVariant::Char));
+    rec.append(QSqlField("qualification", QVariant::Char));
+
+    qDebug() << "lineEdit_fullNameDoctor: " << ui->lineEdit_fullNameDoctor->text();
+     qDebug() << "lineEdit_fullNameDoctor: " << ui->comboBox_specialization->currentText();
+
+
+    rec.setValue(0, ui->lineEdit_fullNameDoctor->text());
+    rec.setValue(1, ui->comboBox_specialization->currentText());
+    rec.setValue(2, ui->comboBox_qualification->currentText());
+
+//    record.set("doctors", ui->lineEdit_fullNameDoctor->text());
+//    record.setValue(ui->lineEdit_fullNameDoctor->text(), );
+ //   record.append(QSqlField("doctors", QVariant::Double));
+    model.insertRecord(0, rec);
+    doctorsModel->insertRecord(0, rec);
+    model.select();
+    model.submitAll();
+    loadTableDoctors();
+>>>>>>> refs/remotes/origin/mashanew
 }
 
