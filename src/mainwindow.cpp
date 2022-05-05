@@ -125,6 +125,11 @@ void MainWindow::actionAbout() {
 void MainWindow::on_btn_add_doctor_clicked()
 {
   //  QSqlRecord record = doctorsModel->record();
+    QSqlTableModel model;
+    model.setTable("test_model");
+//    QModelIndex insertIndex = table->currentIndex();H
+//    int row = insertIndex.row() == -1 ? 0 : insertIndex.row();
+    doctorsModel->insertRow(doctorsModel->rowCount());
     QSqlRecord rec;
     rec.append(QSqlField("name", QVariant::Char));
     rec.append(QSqlField("specialization", QVariant::Char));
@@ -141,9 +146,10 @@ void MainWindow::on_btn_add_doctor_clicked()
 //    record.set("doctors", ui->lineEdit_fullNameDoctor->text());
 //    record.setValue(ui->lineEdit_fullNameDoctor->text(), );
  //   record.append(QSqlField("doctors", QVariant::Double));
+    model.insertRecord(0, rec);
     doctorsModel->insertRecord(0, rec);
-    doctorsModel->select();
-    doctorsModel->submitAll();
+    model.select();
+    model.submitAll();
     loadTableDoctors();
 }
 
