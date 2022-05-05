@@ -3,6 +3,8 @@
 #include <QSqlTableModel>
 #include <QMessageBox>
 #include <QSqlError>
+#include <QSqlRecord>
+#include <QSqlField>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -122,6 +124,26 @@ void MainWindow::actionAbout() {
 
 void MainWindow::on_btn_add_doctor_clicked()
 {
-    mModel->insertRow(mModel->rowCount());
+  //  QSqlRecord record = doctorsModel->record();
+    QSqlRecord rec;
+    rec.append(QSqlField("name", QVariant::Char));
+    rec.append(QSqlField("specialization", QVariant::Char));
+    rec.append(QSqlField("qualification", QVariant::Char));
+
+    qDebug() << "lineEdit_fullNameDoctor: " << ui->lineEdit_fullNameDoctor->text();
+     qDebug() << "lineEdit_fullNameDoctor: " << ui->comboBox_specialization->currentText();
+
+
+    rec.setValue(0, ui->lineEdit_fullNameDoctor->text());
+    rec.setValue(1, ui->comboBox_specialization->currentText());
+    rec.setValue(2, ui->comboBox_qualification->currentText());
+
+//    record.set("doctors", ui->lineEdit_fullNameDoctor->text());
+//    record.setValue(ui->lineEdit_fullNameDoctor->text(), );
+ //   record.append(QSqlField("doctors", QVariant::Double));
+    doctorsModel->insertRecord(0, rec);
+    doctorsModel->select();
+    doctorsModel->submitAll();
+    loadTableDoctors();
 }
 
