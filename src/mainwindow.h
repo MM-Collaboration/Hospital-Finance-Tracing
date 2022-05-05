@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "connectdatabasedialog.h"
 
 #include <QMainWindow>
 #include <QMessageBox>
@@ -15,6 +14,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class QSqlTableModel;
+class QSqlError;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -22,8 +24,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    void quickOpenDatabase();
 
     void loadDatabase();
 
@@ -33,18 +33,17 @@ public:
 
     void loadTableVisits();
 
-    void connectDatabase();
 
 
 protected:
 
 private slots:
     void btnAddDoctorClicked();
-
     // Actions
     void actionOpenFile();
     void actionAbout();
-    void createConnectDatabaseDialog();
+
+    void on_btn_add_doctor_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -54,6 +53,8 @@ private:
     QSqlTableModel *doctorsModel;
     QSqlTableModel *patientsModel;
     QSqlTableModel *visitsModel;
-    QSqlDatabase db;
+    QSqlTableModel *mModel;
+    QSqlDatabase mDatabase;
+
 };
 #endif // MAINWINDOW_H

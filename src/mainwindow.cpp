@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QSqlTableModel>
+#include <QMessageBox>
+#include <QSqlError>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,32 +12,28 @@ MainWindow::MainWindow(QWidget *parent)
     patientsModel = nullptr;
     visitsModel = nullptr;
     ui->setupUi(this);
-    connect(ui->btn_add_doctor, SIGNAL(released()), this, SLOT(btnAddDoctorClicked()));
-    // Connect actions
-    connect(ui->action_openFile, &QAction::triggered, this, &MainWindow::actionOpenFile);
-    // Help menu
-    connect(ui->action_about, &QAction::triggered, this, &MainWindow::actionAbout);
-    connect(ui->action_aboutQt, &QAction::triggered, this, QApplication::aboutQt);
-    connect(ui->action_connectDatabase, &QAction::triggered, this, &MainWindow::createConnectDatabaseDialog);
+    mDatabase=QSqlDatabase::addDatabase("QMYSQL");
+    mDatabase.setHostName("localhost");
+    mDatabase.setDatabaseName("hospital");
+    mDatabase.setPort(3306);
+    mDatabase.setUserName("root");
+    mDatabase.setPassword("root");
+    if (!mDatabase.open()){
+        QMessageBox::critical(this, "Error", mDatabase.lastError().text());
+        return;
+    }
+    mModel=new QSqlTableModel;
+    mModel-> setTable("hospital");
+    mModel-> select();
 
-    connectDatabase();
-    // need to connect with QSettings
-//    openDatabase();
-//    loadDatabase();
-
+    ui-> tableView_visits-> setModel(mModel);
 }
 
 MainWindow::~MainWindow()
 {
-    db.close();
     delete ui;
 }
 
-void MainWindow::connectDatabase() {
-    MainWindow::createConnectDatabaseDialog();
-    db.open();
-    loadDatabase();
-}
 
 void MainWindow::loadTableDoctors() {
     if (doctorsModel == nullptr) {
@@ -81,25 +80,17 @@ void MainWindow::loadTableVisits() {
 
 // Only for development
 // Recommend to add db options to ENV
-void MainWindow::quickOpenDatabase() {
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setDatabaseName("hospital");
-    db.setPort(3306);
-    db.setUserName("root");
-    db.setPassword("");
-    db.open();
-}
 
-void MainWindow::loadDatabase() {
-    if (!db.open()) {
-        QMessageBox::warning(this, "Ошибка открытия базы данных", "Не удалось открыть базу данных");
-    } else {
-        loadTableDoctors();
-        loadTablePatients();
-        loadTableVisits();
-    }
-}
+
+//void MainWindow::loadDatabase() {
+//    if (!db.open()) {
+//        QMessageBox::warning(this, "Ошибка открытия базы данных", "Не удалось открыть базу данных");
+//    } else {
+//        loadTableDoctors();
+//        loadTablePatients();
+//        loadTableVisits();
+//    }
+//}
 
 void MainWindow::btnAddDoctorClicked() {
     QMessageBox::warning(this,
@@ -124,25 +115,8 @@ void MainWindow::actionAbout() {
                        "<p>GitHub: <a href='https://github.com/MM-Collaboration/Hospital-Finance-Tracing'>https://github.com/MM-Collaboration/Hospital-Finance-Tracing</a></p>");
 }
 
- void MainWindow::createConnectDatabaseDialog() {
-    ConnectDatabaseDialog dial;
-    dial.setModal(true);
-    // Set current db options to dialog
-    if (!(db.driverName().isEmpty())) {
-        dial.setDBType(db.driverName());
-        dial.setHostName(db.hostName());
-        dial.setPort(db.port());
-        dial.setDatabaseName(db.databaseName());
-        dial.setUserName(db.userName());
-    }
-
-    // Set db options from dialog
-    if (dial.QDialog::exec()) {
-        db = QSqlDatabase::addDatabase(dial.getDBType());
-        db.setHostName(dial.getHostName());
-        db.setPort(dial.getPort());
-        db.setDatabaseName(dial.getDatabaseName());
-        db.setUserName(dial.getUserName());
-        db.setPassword(dial.getPassword());
-    }
+void MainWindow::on_btn_add_doctor_clicked()
+{
+    mModel->insertRow(mModel->rowCount());
 }
+
