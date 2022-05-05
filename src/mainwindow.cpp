@@ -17,15 +17,21 @@ MainWindow::MainWindow(QWidget *parent)
     mDatabase.setDatabaseName("hospital");
     mDatabase.setPort(3306);
     mDatabase.setUserName("root");
-    mDatabase.setPassword("root");
+    mDatabase.setPassword("");
     if (!mDatabase.open()){
         QMessageBox::critical(this, "Error", mDatabase.lastError().text());
     }
-    mModel=new QSqlTableModel;
-    mModel-> setTable("hospital");
-    mModel-> select();
+//    mModel=new QSqlTableModel;
+//    mModel-> setTable("doctors");
+//    mModel-> select();
 
-    ui-> tableView_visits-> setModel(mModel);
+//    ui->tableView_doctors->setModel(mModel);
+//    loadTableDoctors();
+
+//    ui-> tableView_visits-> setModel(mModel);
+    loadTableDoctors();
+    loadTablePatients();
+    loadTableVisits();
 }
 
 MainWindow::~MainWindow()
