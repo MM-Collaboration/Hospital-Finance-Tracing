@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include "connectdatabasedialog.h"
@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSqlTableModel>
+#include <QSqlRelationalTableModel>
 #include <QSqlDatabase>
 #include <QDebug>
 #include <QFileDialog>
@@ -24,18 +25,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void quickOpenDatabase();
-
+    bool createConnection();
     void loadDatabase();
-
-    void loadTableDoctors();
-
-    void loadTablePatients();
-
-    void loadTableVisits();
-
-    void connectDatabase();
-
+    void reloadTableDoctors();
+    void reloadTablePatients();
+    void reloadTableVisits();
 
 protected:
 
@@ -45,7 +39,8 @@ private slots:
     // Actions
     void actionOpenFile();
     void actionAbout();
-    void createConnectDatabaseDialog();
+
+//    void submit();
 
 private:
     Ui::MainWindow *ui;

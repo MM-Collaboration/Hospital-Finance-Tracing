@@ -10,6 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
     visitsModel = nullptr;
     ui->setupUi(this);
 
+    if (createConnection()) {
+        qDebug() << "Database connected successfully";
+    } else {
+        qDebug() << "Database connection error";
+    }
+
     fullNameRegExp = new QRegExp("[A-z,А-я, ,.]{40}");
     ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("[0-9]{11}\\-"), ui->lineEdit_phoneNumberPatient));
     ui->lineEdit_fullNamePatient->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNamePatient));
@@ -20,12 +26,10 @@ MainWindow::MainWindow(QWidget *parent)
     // Help menu
     connect(ui->action_about, &QAction::triggered, this, &MainWindow::actionAbout);
     connect(ui->action_aboutQt, &QAction::triggered, this, QApplication::aboutQt);
-    connect(ui->action_connectDatabase, &QAction::triggered, this, &MainWindow::createConnectDatabaseDialog);
 
-    connectDatabase();
-    // need to connect with QSettings
-//    openDatabase();
-//    loadDatabase();
+    reloadTableDoctors();
+    reloadTablePatients();
+    reloadTableVisits();
 
 }
 
@@ -35,75 +39,93 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::connectDatabase() {
-    MainWindow::createConnectDatabaseDialog();
-    db.open();
-    loadDatabase();
-}
+//void MainWindow::submit() {
+//    model->database().transaction();
+//    if (model->submitAll()) {
+//        model->database().commit();
+//    } else {
+//        model->database().rollback();
+//        QMessageBox::warning(this, tr("Cached Table"),
+//                             tr("The database reported an error: no description"));
+////                             tr("The database reported an error: %1")
+////                             .arg(model->lastError().text()));
+//    }
+//}
 
-void MainWindow::loadTableDoctors() {
-    if (doctorsModel == nullptr) {
-        doctorsModel = new QSqlTableModel();
-    }
-    doctorsModel->setTable("doctors");
-    doctorsModel->select();
-    doctorsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    doctorsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
-    doctorsModel->setHeaderData(2, Qt::Horizontal, tr("Специализация"));
-    doctorsModel->setHeaderData(3, Qt::Horizontal, tr("Квалификация"));
-    ui->tableView_doctors->setModel(doctorsModel);
-    ui->tableView_doctors->hideColumn(0);
-}
-
-void MainWindow::loadTablePatients() {
-    if (patientsModel == nullptr) {
-        patientsModel = new QSqlTableModel();
-    }
-    patientsModel->setTable("patients");
-    patientsModel->select();
-    patientsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    patientsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
-    patientsModel->setHeaderData(2, Qt::Horizontal, tr("Год рождения"));
-    ui->tableView_patients->setModel(patientsModel);
-    ui->tableView_patients->hideColumn(0);
-}
-
-void MainWindow::loadTableVisits() {
-    if (visitsModel == nullptr) {
-        visitsModel = new QSqlTableModel();
-    }
-    visitsModel->setTable("visits");
-    visitsModel->select();
-    visitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    visitsModel->setHeaderData(1, Qt::Horizontal, tr("Врач"));
-    visitsModel->setHeaderData(2, Qt::Horizontal, tr("Пациент"));
-    visitsModel->setHeaderData(3, Qt::Horizontal, tr("Диагноз"));
-    visitsModel->setHeaderData(4, Qt::Horizontal, tr("Повторный"));
-    visitsModel->setHeaderData(5, Qt::Horizontal, tr("Цена"));
-    ui->tableView_visits->setModel(visitsModel);
-    ui->tableView_visits->hideColumn(0);
-}
-
-// Only for development
-// Recommend to add db options to ENV
-void MainWindow::quickOpenDatabase() {
+bool MainWindow::createConnection() {
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setDatabaseName("hospital");
     db.setPort(3306);
     db.setUserName("root");
     db.setPassword("");
-    db.open();
+    if (!db.open()) {
+        QMessageBox::critical(nullptr, QObject::tr("Cannot open database"),
+            QObject::tr("Unable to establish a database connection.\n"
+                        "This example needs SQLite support. Please read "
+                        "the Qt SQL driver documentation for information how "
+                        "to build it.\n\n"
+                        "Click Cancel to exit."), QMessageBox::Cancel);
+        return false;
+    }
+
+    return true;
+}
+void MainWindow::reloadTableDoctors() {
+    if (doctorsModel == nullptr) {
+        doctorsModel = new QSqlTableModel();
+    }
+    doctorsModel->setTable("doctors");
+    doctorsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    doctorsModel->select();
+
+    doctorsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
+    doctorsModel->setHeaderData(2, Qt::Horizontal, tr("Специализация"));
+    doctorsModel->setHeaderData(3, Qt::Horizontal, tr("Квалификация"));
+    ui->tableView_doctors->hideColumn(0);
+
+    ui->tableView_doctors->setModel(doctorsModel);
+    ui->tableView_doctors->resizeColumnsToContents();
+}
+
+void MainWindow::reloadTablePatients() {
+    if (patientsModel == nullptr) {
+        patientsModel = new QSqlTableModel();
+    }
+    patientsModel->setTable("patients");
+    patientsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    patientsModel->select();
+
+    patientsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
+    patientsModel->setHeaderData(2, Qt::Horizontal, tr("Год рождения"));
+    ui->tableView_patients->hideColumn(1);
+
+    ui->tableView_patients->setModel(patientsModel);
+    ui->tableView_patients->resizeColumnsToContents();
+}
+
+void MainWindow::reloadTableVisits() {
+    if (visitsModel == nullptr) {
+        visitsModel = new QSqlRelationalTableModel();
+    }
+    visitsModel->setTable("visits");
+    visitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    visitsModel->select();
+
+    visitsModel->setHeaderData(1, Qt::Horizontal, tr("Врач"));
+    visitsModel->setHeaderData(2, Qt::Horizontal, tr("Пациент"));
+    visitsModel->setHeaderData(3, Qt::Horizontal, tr("Диагноз"));
+    visitsModel->setHeaderData(4, Qt::Horizontal, tr("Повторный"));
+    visitsModel->setHeaderData(5, Qt::Horizontal, tr("Цена"));
+    ui->tableView_visits->hideColumn(0);
+
+    ui->tableView_visits->setModel(visitsModel);
 }
 
 void MainWindow::loadDatabase() {
-    if (!db.open()) {
-        QMessageBox::warning(this, "Ошибка открытия базы данных", "Не удалось открыть базу данных");
-    } else {
-        loadTableDoctors();
-        loadTablePatients();
-        loadTableVisits();
-    }
+    reloadTableDoctors();
+    reloadTablePatients();
+    reloadTableVisits();
 }
 
 void MainWindow::btnAddDoctorClicked() {
@@ -127,27 +149,4 @@ void MainWindow::actionAbout() {
                        "О Hospital Finance Tracing",
                        "<p><b>Hospital Finance Tracing</b> - программа для сбора финансовой статистики поликлиники</p>"
                        "<p>GitHub: <a href='https://github.com/MM-Collaboration/Hospital-Finance-Tracing'>https://github.com/MM-Collaboration/Hospital-Finance-Tracing</a></p>");
-}
-
- void MainWindow::createConnectDatabaseDialog() {
-    ConnectDatabaseDialog dial;
-    dial.setModal(true);
-    // Set current db options to dialog
-    if (!(db.driverName().isEmpty())) {
-        dial.setDBType(db.driverName());
-        dial.setHostName(db.hostName());
-        dial.setPort(db.port());
-        dial.setDatabaseName(db.databaseName());
-        dial.setUserName(db.userName());
-    }
-
-    // Set db options from dialog
-    if (dial.QDialog::exec()) {
-        db = QSqlDatabase::addDatabase(dial.getDBType());
-        db.setHostName(dial.getHostName());
-        db.setPort(dial.getPort());
-        db.setDatabaseName(dial.getDatabaseName());
-        db.setUserName(dial.getUserName());
-        db.setPassword(dial.getPassword());
-    }
 }
