@@ -16,9 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "Database connection error";
     }
 
-    fullNameRegExp = new QRegExp("[A-z,А-я, ,.]{40}");
-    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("[0-9]{11}\\-"), ui->lineEdit_phoneNumberPatient));
+    fullNameRegExp = new QRegExp("[A-z,А-я, ,.,-]{40}");
+    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("(-?)(\\+7|8|[1-9]{3})([0-9]{10})"), ui->lineEdit_phoneNumberPatient));
     ui->lineEdit_fullNamePatient->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNamePatient));
+    ui->lineEdit_fullNameDoctor->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNameDoctor));
+    ui->lineEdit_visitPrice->setValidator(new QRegExpValidator(QRegExp("(-?)(0|[1-9][0-9]*)(\\.[0-9]{2})"), ui->lineEdit_visitPrice));
 
     connect(ui->btn_add_doctor, SIGNAL(released()), this, SLOT(btnAddDoctorClicked()));
     // Connect actions
