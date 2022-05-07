@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_fullNameDoctor->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNameDoctor));
     ui->lineEdit_visitPrice->setValidator(new QRegExpValidator(QRegExp("(-?)(0|[1-9][0-9]*)(\\.[0-9]{2})"), ui->lineEdit_visitPrice));
 
-    connect(ui->btn_add_doctor, SIGNAL(released()), this, SLOT(btnAddDoctorClicked()));
     // Connect actions
     connect(ui->action_openFile, &QAction::triggered, this, &MainWindow::actionOpenFile);
     // Help menu
@@ -41,26 +40,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//void MainWindow::submit() {
-//    model->database().transaction();
-//    if (model->submitAll()) {
-//        model->database().commit();
-//    } else {
-//        model->database().rollback();
-//        QMessageBox::warning(this, tr("Cached Table"),
-//                             tr("The database reported an error: no description"));
-////                             tr("The database reported an error: %1")
-////                             .arg(model->lastError().text()));
-//    }
-//}
-
 bool MainWindow::createConnection() {
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setDatabaseName("hospital");
     db.setPort(3306);
     db.setUserName("root");
-    db.setPassword("");
+    db.setPassword(""); // empty or 'root' or your password
     if (!db.open()) {
         QMessageBox::critical(nullptr, QObject::tr("Cannot open database"),
             QObject::tr("Unable to establish a database connection.\n"
@@ -73,6 +59,7 @@ bool MainWindow::createConnection() {
 
     return true;
 }
+
 void MainWindow::reloadTableDoctors() {
     if (doctorsModel == nullptr) {
         doctorsModel = new QSqlTableModel();
@@ -100,7 +87,7 @@ void MainWindow::reloadTablePatients() {
 
     patientsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
     patientsModel->setHeaderData(2, Qt::Horizontal, tr("Год рождения"));
-    ui->tableView_patients->hideColumn(1);
+//    ui->tableView_patients->hideColumn(0);
 
     ui->tableView_patients->setModel(patientsModel);
     ui->tableView_patients->resizeColumnsToContents();
@@ -112,6 +99,9 @@ void MainWindow::reloadTableVisits() {
     }
     visitsModel->setTable("visits");
     visitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+    visitsModel->setRelation(6, QSqlRelation("doctors", "id", "name"));
+
     visitsModel->select();
 
     visitsModel->setHeaderData(1, Qt::Horizontal, tr("Врач"));
@@ -121,19 +111,9 @@ void MainWindow::reloadTableVisits() {
     visitsModel->setHeaderData(5, Qt::Horizontal, tr("Цена"));
     ui->tableView_visits->hideColumn(0);
 
+
     ui->tableView_visits->setModel(visitsModel);
-}
-
-void MainWindow::loadDatabase() {
-    reloadTableDoctors();
-    reloadTablePatients();
-    reloadTableVisits();
-}
-
-void MainWindow::btnAddDoctorClicked() {
-    QMessageBox::warning(this,
-                         "Hello",
-                         "It`s just a msg!");
+    ui->tableView_visits->resizeColumnsToContents();
 }
 
 // Actions
@@ -151,4 +131,71 @@ void MainWindow::actionAbout() {
                        "О Hospital Finance Tracing",
                        "<p><b>Hospital Finance Tracing</b> - программа для сбора финансовой статистики поликлиники</p>"
                        "<p>GitHub: <a href='https://github.com/MM-Collaboration/Hospital-Finance-Tracing'>https://github.com/MM-Collaboration/Hospital-Finance-Tracing</a></p>");
+}
+
+//void MainWindow::doctorsSubmit() {
+//    doctorsModel->database().transaction();
+//    if (doctorsModel->submitAll()) {
+//        doctorsModel->database().commit();
+//    } else {
+//        doctorsModel->database().rollback();
+//        QMessageBox::warning(this, tr("Cached Table"),
+////                             tr("The database reported an error: no description"));
+//                             tr("The database reported an error: %1").arg(doctorsModel->lastError().text()));
+//    }
+//}
+
+
+void MainWindow::on_btn_add_patient_clicked()
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO patients (name, date_of_birth) "
+                  "VALUES (:name, :date_of_birth)");
+    query.bindValue(":name", ui->lineEdit_fullNamePatient->text());
+    query.bindValue(":date_of_birth", ui->dateEdit_yearOfBirthPatient->text().toInt());
+    query.exec();
+    ui->lineEdit_fullNamePatient->clear();
+    reloadTablePatients();
+
+    patientsModel->select();
+}
+
+void MainWindow::on_btn_edit_patient_clicked()
+{
+
+}
+
+void MainWindow::on_btn_add_doctor_clicked()
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO doctors (name, specialization, qualification) "
+                  "VALUES (:name, :specialization, :qualification)");
+    query.bindValue(":name", ui->lineEdit_fullNameDoctor->text());
+    query.bindValue(":specialization", ui->comboBox_doctorSpecialization->currentText());
+    query.bindValue(":qualification", ui->comboBox_doctorQualification->currentText());
+    query.exec();
+    ui->lineEdit_fullNameDoctor->clear();
+    reloadTablePatients();
+
+    doctorsModel->select();
+
+}
+
+
+void MainWindow::on_lineEdit_fullNameDoctor_textChanged()
+{
+    if (ui->lineEdit_fullNameDoctor->text().isEmpty()) {
+        ui->btn_add_doctor->setEnabled(false);
+    } else if (!ui->btn_add_doctor->isEnabled()) {
+        ui->btn_add_doctor->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lineEdit_fullNamePatient_textChanged()
+{
+    if (ui->lineEdit_fullNamePatient->text().isEmpty()) {
+        ui->btn_add_patient->setEnabled(false);
+    } else if (!ui->btn_add_patient->isEnabled()) {
+        ui->btn_add_patient->setEnabled(true);
+    }
 }

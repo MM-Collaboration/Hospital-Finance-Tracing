@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1019</width>
-    <height>631</height>
+    <width>1009</width>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_appointments_list">
        <attribute name="title">
@@ -128,7 +128,36 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Цена</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_visitPrice"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QCheckBox" name="checkBox_repeatedVisit">
+            <property name="text">
+             <string>Повторный приём</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="tristate">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -141,19 +170,23 @@
             </property>
            </spacer>
           </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="btn_add_appointment">
-            <property name="text">
-             <string>Добавить</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QPushButton" name="btn_edit_appointment">
-            <property name="text">
-             <string>Изменить</string>
-            </property>
-           </widget>
+          <item row="7" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QPushButton" name="btn_edit_appointment">
+              <property name="text">
+               <string>Изменить</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_add_appointment">
+              <property name="text">
+               <string>Добавить</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -190,6 +223,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <widget class="QPushButton" name="btn_edit_doctor">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Изменить</string>
               </property>
@@ -197,6 +233,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="btn_add_doctor">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Добавить</string>
               </property>
@@ -222,7 +261,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QComboBox" name="comboBox_11">
+           <widget class="QComboBox" name="comboBox_doctorSpecialization">
             <item>
              <property name="text">
               <string>ЛОР</string>
@@ -258,7 +297,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBox_qualification">
+           <widget class="QComboBox" name="comboBox_doctorQualification">
             <item>
              <property name="text">
               <string>Вторая</string>
@@ -284,7 +323,7 @@
        <attribute name="title">
         <string>Пациенты</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="2,0">
+       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="2,1">
         <item>
          <widget class="QTableView" name="tableView_patients">
           <property name="autoScrollMargin">
@@ -311,6 +350,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_14">
             <item>
              <widget class="QPushButton" name="btn_edit_patient">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Изменить</string>
               </property>
@@ -318,6 +360,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="btn_add_patient">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Добавить</string>
               </property>
@@ -346,7 +391,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDateEdit" name="dateEdit_yearOfBirthDoctor">
+           <widget class="QDateEdit" name="dateEdit_yearOfBirthPatient">
             <property name="dateTime">
              <datetime>
               <hour>0</hour>
@@ -424,6 +469,9 @@
             <property name="placeholderText">
              <string>8 900 000-00-00</string>
             </property>
+            <property name="clearButtonEnabled">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -497,8 +545,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>300</width>
-                <height>379</height>
+                <width>297</width>
+                <height>394</height>
                </rect>
               </property>
               <attribute name="label">
@@ -575,7 +623,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1019</width>
+     <width>1009</width>
      <height>22</height>
     </rect>
    </property>
@@ -668,17 +716,15 @@
  <tabstops>
   <tabstop>tableView_patients</tabstop>
   <tabstop>lineEdit_fullNamePatient</tabstop>
-  <tabstop>dateEdit_yearOfBirthDoctor</tabstop>
+  <tabstop>dateEdit_yearOfBirthPatient</tabstop>
   <tabstop>lineEdit_phoneNumberPatient</tabstop>
   <tabstop>btn_edit_patient</tabstop>
   <tabstop>btn_add_patient</tabstop>
   <tabstop>btn_add_doctor</tabstop>
-  <tabstop>btn_edit_appointment</tabstop>
-  <tabstop>comboBox_qualification</tabstop>
-  <tabstop>comboBox_11</tabstop>
+  <tabstop>comboBox_doctorQualification</tabstop>
+  <tabstop>comboBox_doctorSpecialization</tabstop>
   <tabstop>lineEdit_fullNameDoctor</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>btn_add_appointment</tabstop>
   <tabstop>tableView_doctors</tabstop>
   <tabstop>btn_edit_doctor</tabstop>
   <tabstop>comboBox_vistDoctor</tabstop>

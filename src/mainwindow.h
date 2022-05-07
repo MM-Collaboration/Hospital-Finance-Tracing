@@ -12,6 +12,8 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QRegExpValidator>
+#include <QStandardItem>
+#include <QSqlQuery>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,16 +33,26 @@ public:
     void reloadTablePatients();
     void reloadTableVisits();
 
+    void doctorsSubmit();
+
 protected:
 
 private slots:
-    void btnAddDoctorClicked();
-
     // Actions
     void actionOpenFile();
     void actionAbout();
 
 //    void submit();
+
+    void on_btn_add_patient_clicked();
+
+    void on_btn_edit_patient_clicked();
+
+    void on_btn_add_doctor_clicked();
+
+    void on_lineEdit_fullNameDoctor_textChanged();
+
+    void on_lineEdit_fullNamePatient_textChanged();
 
 private:
     Ui::MainWindow *ui;
@@ -49,7 +61,7 @@ private:
     QPushButton *btnAddDoctor;
     QSqlTableModel *doctorsModel;
     QSqlTableModel *patientsModel;
-    QSqlTableModel *visitsModel;
+    QSqlRelationalTableModel *visitsModel;
     QSqlDatabase db;
 
     // Regular expresions
