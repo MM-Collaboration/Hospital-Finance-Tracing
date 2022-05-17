@@ -28,7 +28,7 @@ CREATE TABLE `doctors` (
   `specialization` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `qualification` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,16 @@ LOCK TABLES `doctors` WRITE;
 INSERT INTO `doctors` VALUES
 (1,'Док. Василий','Просто врач','Кандидат наук'),
 (2,'Док. Петя','Хирург','Высшая категория'),
-(3,'Mr. Doctor Strange','Волшебный врач','Верховный маг');
+(3,'Mr. Doctor Strange','Волшебный врач','Верховный маг'),
+(5,'Док. Маша','Психолог','Высшая'),
+(6,'Youbestname','ЛОР','Вторая'),
+(8,'Testname','ЛОР','Вторая'),
+(9,'Михаил','ЛОР','Вторая'),
+(10,'Владислав','ЛОР','Вторая'),
+(11,'sdsa','ЛОР','Вторая'),
+(12,'dasd','ЛОР','Вторая'),
+(13,'Hello','ЛОР','Вторая'),
+(14,'Эрланг','Хирург','Высшая');
 /*!40000 ALTER TABLE `doctors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,7 +93,7 @@ CREATE TABLE `patients` (
   `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_of_birth` year(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +105,19 @@ LOCK TABLES `patients` WRITE;
 INSERT INTO `patients` VALUES
 (1,'Алексей',1985),
 (2,'Анна',1989),
-(3,'Николай',2000);
+(3,'Николай',2000),
+(4,'Константин',1999),
+(17,'Name',2020),
+(18,'Мария',2003),
+(19,'Маша',2000),
+(20,'Маша',2000),
+(21,'Маша',2000),
+(22,'Маша',2000),
+(23,'Маша',2000),
+(24,'Маша',2003),
+(25,'asdsad',2000),
+(26,'ehsad',2000),
+(27,'Константин',1999);
 /*!40000 ALTER TABLE `patients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +129,7 @@ DROP TABLE IF EXISTS `visits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `visits` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `doctors_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `patient_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `diagnosis` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -116,8 +137,10 @@ CREATE TABLE `visits` (
   `price` double DEFAULT 0,
   `doctors_id` int(11) DEFAULT NULL,
   `patient_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`id`),
+  KEY `fk_doctor_name` (`doctors_id`),
+  CONSTRAINT `fk_doctor_name` FOREIGN KEY (`doctors_id`) REFERENCES `doctors` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,6 +149,11 @@ CREATE TABLE `visits` (
 
 LOCK TABLES `visits` WRITE;
 /*!40000 ALTER TABLE `visits` DISABLE KEYS */;
+INSERT INTO `visits` VALUES
+(1,NULL,NULL,'Болен',0,100.14,NULL,NULL),
+(2,NULL,NULL,'Немного болен',0,100,1,NULL),
+(3,NULL,NULL,'Сильно болен',0,50,2,NULL),
+(4,NULL,NULL,'Почти не болен\n',0,20,3,NULL);
 /*!40000 ALTER TABLE `visits` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -138,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-18 20:47:28
+-- Dump completed on 2022-05-17  8:42:30
