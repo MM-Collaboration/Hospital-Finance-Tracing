@@ -10,6 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     visitsModel = nullptr;
     ui->setupUi(this);
 
+    ui->tableView_visits->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView_doctors->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView_patients->setSelectionBehavior(QAbstractItemView::SelectRows);
+
     if (createConnection()) {
         qDebug() << "Database connected successfully";
     } else {
