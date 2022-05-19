@@ -130,17 +130,17 @@ DROP TABLE IF EXISTS `visits`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `visits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `doctors_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `patient_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `patients_id` int(11) DEFAULT NULL,
+  `doctors_id` int(11) DEFAULT NULL,
   `diagnosis` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `repeated_visit` tinyint(1) DEFAULT 0,
   `price` double DEFAULT 0,
-  `doctors_id` int(11) DEFAULT NULL,
-  `patient_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_doctor_name` (`doctors_id`),
-  CONSTRAINT `fk_doctor_name` FOREIGN KEY (`doctors_id`) REFERENCES `doctors` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `fk_patients_name` (`patients_id`),
+  CONSTRAINT `fk_doctor_name` FOREIGN KEY (`doctors_id`) REFERENCES `doctors` (`id`),
+  CONSTRAINT `fk_patients_name` FOREIGN KEY (`patients_id`) REFERENCES `patients` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,10 +150,12 @@ CREATE TABLE `visits` (
 LOCK TABLES `visits` WRITE;
 /*!40000 ALTER TABLE `visits` DISABLE KEYS */;
 INSERT INTO `visits` VALUES
-(1,NULL,NULL,'Болен',0,100.14,NULL,NULL),
-(2,NULL,NULL,'Немного болен',0,100,1,NULL),
-(3,NULL,NULL,'Сильно болен',0,50,2,NULL),
-(4,NULL,NULL,'Почти не болен\n',0,20,3,NULL);
+(1,NULL,NULL,'Болен',0,100.14),
+(2,NULL,1,'Немного болен',0,100),
+(3,NULL,2,'Сильно болен',0,50),
+(4,1,3,'Почти не болен\n',0,20),
+(5,1,NULL,NULL,0,0),
+(6,1,NULL,NULL,0,0);
 /*!40000 ALTER TABLE `visits` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -166,4 +168,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-17  8:42:30
+-- Dump completed on 2022-05-19 21:22:16
