@@ -14,6 +14,7 @@
 #include <QRegExpValidator>
 #include <QStandardItem>
 #include <QSqlQuery>
+#include <QStringListModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,6 +35,10 @@ public:
     void reloadTableVisits();
 
     void doctorsSubmit();
+    void updateStat();
+
+    void activatePatientAddPushButton();
+    void activateVisitAddPushButton();
 
 protected:
 
@@ -41,7 +46,6 @@ private slots:
     // Actions
     void actionOpenFile();
     void actionAbout();
-    void updateStat();
 
 //    void submit();
 
@@ -65,15 +69,24 @@ private slots:
 
     void on_pushButton_statUpdate_clicked();
 
+    void on_lineEdit_phoneNumberPatient_textChanged(const QString &arg1);
+
+    void on_lineEdit_visitDiagnosis_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
+    int *statModelIndex = 0;
+    QStringListModel *statListModel;
+    QModelIndex *statModel;
     QSqlTableModel *doctorsModel;
     QSqlTableModel *patientsModel;
     QSqlRelationalTableModel *visitsModel;
     QSqlDatabase db;
+
+    double *statPriceList;
 
     // Regular expresions
     QRegExp *fullNameRegExp;

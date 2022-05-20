@@ -8,11 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     doctorsModel = nullptr;
     patientsModel = nullptr;
     visitsModel = nullptr;
+    statModel = nullptr;
     ui->setupUi(this);
-
-    ui->tableView_visits->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tableView_doctors->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tableView_patients->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     if (createConnection()) {
         qDebug() << "Database connected successfully";
@@ -20,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "Database connection error";
     }
 
-    fullNameRegExp = new QRegExp("[A-z,А-я, ,.,-]{40}");
-    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("(-?)(\\+7|8|[1-9]{3})([0-9]{10})"), ui->lineEdit_phoneNumberPatient));
+    fullNameRegExp = new QRegExp("[A-z,А-я, ,.,-]{50}");
+    ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("(\\+7[1-9]{2}|8|[1-9]{3})([0-9]{8})"), ui->lineEdit_phoneNumberPatient));
     ui->lineEdit_fullNamePatient->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNamePatient));
     ui->lineEdit_fullNameDoctor->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNameDoctor));
 
@@ -83,6 +80,9 @@ void MainWindow::reloadTableDoctors() {
 
     // set visitDoctors combobox items
     QSqlQuery query("SELECT name FROM doctors");
+    while (ui->comboBox_vistDoctor->count() != 0) { // claer comboBox
+        ui->comboBox_vistDoctor->removeItem(0);
+    }
     while (query.next()) {
         QString name = query.value(0).toString();
         qDebug() << "Doctor name: " << name;
@@ -101,7 +101,6 @@ void MainWindow::reloadTablePatients() {
     patientsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
     patientsModel->setHeaderData(2, Qt::Horizontal, tr("Год рождения"));
     patientsModel->setHeaderData(3, Qt::Horizontal, tr("Телефон"));
-//    ui->tableView_patients->hideColumn(0);
 
     ui->tableView_patients->setModel(patientsModel);
     ui->tableView_patients->setColumnHidden(0, true);
@@ -109,6 +108,9 @@ void MainWindow::reloadTablePatients() {
 
     // set visitPatients combobox items
     QSqlQuery query("SELECT name FROM patients");
+    while (ui->comboBox_vistPatient->count() != 0) { // claer comboBox
+        ui->comboBox_vistPatient->removeItem(0);
+    }
     while (query.next()) {
         QString name = query.value(0).toString();
         qDebug() << "Patient name: " << name;
@@ -159,13 +161,19 @@ void MainWindow::actionAbout() {
 
 void MainWindow::on_btn_add_patient_clicked()
 {
+    qDebug() << " ui->dateEdit_yearOfBirthPatient->dateTime().toString(dd/MM/yy))" <<  ui->dateEdit_yearOfBirthPatient->dateTime().toString("dd/MM/yyyy");
     QSqlQuery query;
-    query.prepare("INSERT INTO patients (name, date_of_birth) "
-                  "VALUES (:name, :date_of_birth)");
+    query.prepare("INSERT INTO patients (name, date_of_birth, phone_number)"
+                  "VALUES (:name, :date_of_birth, :phone_number)");
     query.bindValue(":name", ui->lineEdit_fullNamePatient->text());
-    query.bindValue(":date_of_birth", ui->dateEdit_yearOfBirthPatient->text().toInt());
+    query.bindValue(":date_of_birth", ui->dateEdit_yearOfBirthPatient->dateTime().toString("yyyy"));
+    query.bindValue(":phone_number", ui->lineEdit_phoneNumberPatient->text());
     query.exec();
+
     ui->lineEdit_fullNamePatient->clear();
+    ui->dateEdit_yearOfBirthPatient->clear();
+    ui->lineEdit_phoneNumberPatient->clear();
+
     reloadTablePatients();
 
     patientsModel->select();
@@ -186,12 +194,33 @@ void MainWindow::on_btn_add_doctor_clicked()
     query.bindValue(":qualification", ui->comboBox_doctorQualification->currentText());
     query.exec();
     ui->lineEdit_fullNameDoctor->clear();
-    reloadTablePatients();
+    reloadTableDoctors();
 
     doctorsModel->select();
 
 }
 
+void MainWindow::activatePatientAddPushButton() {
+    int phoneNumberLength = ui->lineEdit_phoneNumberPatient->text().length();
+    if (!ui->lineEdit_fullNamePatient->text().isEmpty() && (!ui->lineEdit_phoneNumberPatient->text().isEmpty() && ((ui->lineEdit_phoneNumberPatient->text().split("")[1] == "+") ? (phoneNumberLength >= 12) : (phoneNumberLength >= 11)))) {
+        ui->btn_add_patient->setEnabled(true);
+    } else if (ui->btn_add_patient->isEnabled()) {
+        ui->btn_add_patient->setEnabled(false);
+    }
+}
+
+void MainWindow::activateVisitAddPushButton() {
+    if (!ui->lineEdit_visitDiagnosis->text().isEmpty()) {
+        ui->btn_add_appointment->setEnabled(true);
+    } else if (ui->btn_add_appointment->isEnabled()) {
+        ui->btn_add_appointment->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lineEdit_visitDiagnosis_textChanged(const QString &arg1)
+{
+    activateVisitAddPushButton();
+}
 
 void MainWindow::on_lineEdit_fullNameDoctor_textChanged()
 {
@@ -204,31 +233,61 @@ void MainWindow::on_lineEdit_fullNameDoctor_textChanged()
 
 void MainWindow::on_lineEdit_fullNamePatient_textChanged()
 {
-    if (ui->lineEdit_fullNamePatient->text().isEmpty()) {
-        ui->btn_add_patient->setEnabled(false);
-    } else if (!ui->btn_add_patient->isEnabled()) {
-        ui->btn_add_patient->setEnabled(true);
-    }
+    activatePatientAddPushButton();
+}
+
+void MainWindow::on_lineEdit_phoneNumberPatient_textChanged(const QString &arg1)
+{
+    activatePatientAddPushButton();
 }
 
 void MainWindow::on_btn_add_appointment_clicked()
 {
-    if (ui->lineEdit_fullNamePatient->text().isEmpty()) {
-        ui->btn_add_patient->setEnabled(false);
-    } else if (!ui->btn_add_patient->isEnabled()) {
-        ui->btn_add_patient->setEnabled(true);
+    // get patient id
+    QSqlQuery patientIdQuery = QSqlQuery();
+    patientIdQuery.prepare("SELECT id FROM doctors WHERE name=:patient_name");
+    patientIdQuery.bindValue(":patient_name",  ui->comboBox_statDoctor->currentText());
+    patientIdQuery.exec();
+    int patient_id{}; //doctorIdQuery.boundValue(0).toInt() + 1;
+    while (patientIdQuery.next()) {
+        patient_id= patientIdQuery.value(0).toInt();
     }
 
+    // get doctor id
+    QSqlQuery doctorIdQuery = QSqlQuery();
+    doctorIdQuery.prepare("SELECT id FROM doctors WHERE name=:doctor_name");
+    doctorIdQuery.bindValue(":doctor_name",  ui->comboBox_vistDoctor->currentText());
+    doctorIdQuery.exec();
+    int doctor_id{};
+    while (doctorIdQuery.next()) {
+        doctor_id = doctorIdQuery.value(0).toInt();
+    }
+
+    // insert data into visits
+    QSqlQuery query;
+    query.prepare("INSERT INTO visits (date, patients_id, doctors_id, diagnosis, repeated_visit, price) "
+                  "VALUES (:date, :patients_id, :doctors_id, :diagnosis, :repeated_visit, :price)");
+    query.bindValue(":date",  ui->calendarWidget_visit->selectedDate().toString("dd/MM/yy"));
+    query.bindValue(":patients_id", patient_id);
+    query.bindValue(":doctors_id", doctor_id);
+    query.bindValue(":diagnosis", ui->lineEdit_visitDiagnosis->text());
+    query.bindValue(":repeated_visit", ui->checkBox_repeatedVisit->isChecked());
+    query.bindValue(":price", ui->doubleSpinBox_visitPrice->value());
+    query.exec();
+
+    ui->lineEdit_fullNameDoctor->clear();
+    reloadTableVisits();
+
+    doctorsModel->select();
 }
 
 void MainWindow::on_tableView_patients_clicked(const QModelIndex &index)
 {
     qDebug() << "Patient current row: " << index.row();
     qDebug() << "Patient current data: " << index.sibling(index.row(), 1).data().toString();
-//    qDebug() << "Patient current date: " << index.sibling(index.row(), 2).data(
-//    int id = patientsModel.jO
     ui->lineEdit_fullNamePatient->setText(index.sibling(index.row(), 1).data().toString());
-//    ui->dateEdit_yearOfBirthPatient->setDate(index.sibling(index.row(), 1).data().toDate());
+//    ui->dateEdit_yearOfBirthPatient->setDate(index.sibling(index.row(), 2).data().toDate());
+//    qDebug() << "index.sibling(index.row(), 1).data().toDate()): " << QString("12-12-" + index.sibling(index.row(), 2).data().toString());
     QString phone_number = index.sibling(index.row(), 3).data().toString();
     if (phone_number != QString("0")) {
         ui->lineEdit_phoneNumberPatient->setText(phone_number);
@@ -236,7 +295,6 @@ void MainWindow::on_tableView_patients_clicked(const QModelIndex &index)
         ui->lineEdit_phoneNumberPatient->setText("");
     }
 }
-
 
 void MainWindow::on_tableView_doctors_clicked(const QModelIndex &index)
 {
@@ -253,7 +311,6 @@ void MainWindow::on_tableView_doctors_clicked(const QModelIndex &index)
     }
 
 }
-
 
 void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
 {
@@ -272,14 +329,49 @@ void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
     ui->checkBox_repeatedVisit->setChecked(repeated_visit_flag);
 
     ui->doubleSpinBox_visitPrice->setValue(index.sibling(index.row(), 6).data().toDouble());
-
-//    ui->calendarWidget_visit->setDateTextFormat(index.sibling(index.row(), 1).data().toDate(), QTextCharFormat("MM d yyy"));
 }
 
 
 void MainWindow::on_pushButton_statUpdate_clicked()
 {
     updateStat();
+    statListModel = new QStringListModel(this);
+
+    QStringList List;
+
+    QSqlQuery doctorIdQuery = QSqlQuery();
+    doctorIdQuery.prepare("SELECT id FROM doctors WHERE name=:doctor_name");
+    doctorIdQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
+    doctorIdQuery.exec();
+    int doctor_id{};
+    while (doctorIdQuery.next()) {
+        doctor_id = doctorIdQuery.value(0).toInt();
+        qDebug() << "===========Doctor id: " << doctor_id;
+    }
+    qDebug() << "Doctor id: " << doctor_id;
+    qDebug() << "comboBox_statDoctor->currentText: " <<  ui->comboBox_statDoctor->currentText();
+
+    QSqlQuery query = QSqlQuery();
+    query.prepare("SELECT price FROM visits WHERE doctors_id=:doctor_id");
+    query.bindValue(":doctor_id", doctor_id);
+    query.exec();
+    while (query.next()) {
+        QString price = query.value(0).toString();
+        qDebug() << "Doctor price: " << price;
+        List.append(price);
+
+    }
+    qDebug() << "List: " << List;
+
+    // Populate our model
+    statListModel->setStringList(List);
+
+    ui->listView_statAll->setModel(statListModel);
+//    QModelIndex modelIndex;
+//    statModel->insertRow(*statModelIndex, modelIndex);
+//    statModelIndex++;
+//    ui->tableView_statAll->setModel(statModel);
+//    ui->tableView_statAll
 }
 
 void MainWindow::updateStat() {
@@ -291,3 +383,5 @@ void MainWindow::updateStat() {
         ui->comboBox_statDoctor->addItem(name);
     }
 }
+
+
