@@ -106,16 +106,17 @@ void MainWindow::reloadTableVisits() {
     visitsModel->setTable("visits");
     visitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
-    visitsModel->setRelation(1, QSqlRelation("patients", "id", "name"));
-    visitsModel->setRelation(2, QSqlRelation("doctors", "id", "name"));
+    visitsModel->setRelation(2, QSqlRelation("patients", "id", "name"));
+    visitsModel->setRelation(3, QSqlRelation("doctors", "id", "name"));
 
     visitsModel->select();
 
-    visitsModel->setHeaderData(1, Qt::Horizontal, tr("Пациент"));
-    visitsModel->setHeaderData(2, Qt::Horizontal, tr("Врач"));
-    visitsModel->setHeaderData(3, Qt::Horizontal, tr("Диагноз"));
-    visitsModel->setHeaderData(4, Qt::Horizontal, tr("Повторный"));
-    visitsModel->setHeaderData(5, Qt::Horizontal, tr("Цена"));
+    visitsModel->setHeaderData(1, Qt::Horizontal, tr("Дата"));
+    visitsModel->setHeaderData(2, Qt::Horizontal, tr("Пациент"));
+    visitsModel->setHeaderData(3, Qt::Horizontal, tr("Врач"));
+    visitsModel->setHeaderData(4, Qt::Horizontal, tr("Диагноз"));
+    visitsModel->setHeaderData(5, Qt::Horizontal, tr("Повторный"));
+    visitsModel->setHeaderData(6, Qt::Horizontal, tr("Цена"));
 
 
     ui->tableView_visits->setModel(visitsModel);

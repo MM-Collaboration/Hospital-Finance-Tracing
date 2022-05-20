@@ -130,6 +130,7 @@ DROP TABLE IF EXISTS `visits`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `visits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
   `patients_id` int(11) DEFAULT NULL,
   `doctors_id` int(11) DEFAULT NULL,
   `diagnosis` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -150,12 +151,10 @@ CREATE TABLE `visits` (
 LOCK TABLES `visits` WRITE;
 /*!40000 ALTER TABLE `visits` DISABLE KEYS */;
 INSERT INTO `visits` VALUES
-(1,NULL,NULL,'Болен',0,100.14),
-(2,NULL,1,'Немного болен',0,100),
-(3,NULL,2,'Сильно болен',0,50),
-(4,1,3,'Почти не болен\n',0,20),
-(5,1,NULL,NULL,0,0),
-(6,1,NULL,NULL,0,0);
+(1,'2022-05-20',18,2,'Болен',0,100.14),
+(2,'2022-05-26',3,1,'Немного болен',0,100),
+(3,'2022-06-01',2,2,'Сильно болен',0,50),
+(4,'2022-05-30',1,3,'Почти не болен\n',0,20);
 /*!40000 ALTER TABLE `visits` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -168,4 +167,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-19 21:22:16
+-- Dump completed on 2022-05-20  8:40:14
