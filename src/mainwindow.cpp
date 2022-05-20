@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     reloadTableDoctors();
     reloadTablePatients();
     reloadTableVisits();
+    loadDoctorsSpecializationComboBox();
+    loadDoctorsQualificationComboBox();
 
     updateStat();
 }
@@ -59,6 +61,30 @@ bool MainWindow::createConnection() {
     }
 
     return true;
+}
+
+void MainWindow::loadDoctorsSpecializationComboBox() {
+    // set doctors specialization in combobox
+    QSqlQuery query("SELECT specialization FROM doctors_specializations");
+    while (ui->comboBox_doctorSpecialization->count() != 0) { // claer comboBox
+        ui->comboBox_doctorSpecialization->removeItem(0);
+    }
+    while (query.next()) {
+        QString specialization = query.value(0).toString();
+        ui->comboBox_doctorSpecialization->addItem(specialization);
+    }
+}
+
+void MainWindow::loadDoctorsQualificationComboBox() {
+    // set doctors qualifiation in combobox
+    QSqlQuery query("SELECT qualification FROM doctors_qualifications");
+    while (ui->comboBox_doctorQualification->count() != 0) { // claer comboBox
+        ui->comboBox_doctorQualification->removeItem(0);
+    }
+    while (query.next()) {
+        QString qualification = query.value(0).toString();
+        ui->comboBox_doctorQualification->addItem(qualification);
+    }
 }
 
 void MainWindow::reloadTableDoctors() {
@@ -171,7 +197,6 @@ void MainWindow::on_btn_add_patient_clicked()
     query.exec();
 
     ui->lineEdit_fullNamePatient->clear();
-    ui->dateEdit_yearOfBirthPatient->clear();
     ui->lineEdit_phoneNumberPatient->clear();
 
     reloadTablePatients();
@@ -245,8 +270,8 @@ void MainWindow::on_btn_add_appointment_clicked()
 {
     // get patient id
     QSqlQuery patientIdQuery = QSqlQuery();
-    patientIdQuery.prepare("SELECT id FROM doctors WHERE name=:patient_name");
-    patientIdQuery.bindValue(":patient_name",  ui->comboBox_statDoctor->currentText());
+    patientIdQuery.prepare("SELECT id FROM patients WHERE name=:patient_name");
+    patientIdQuery.bindValue(":patient_name",  ui->comboBox_vistPatient->currentText());
     patientIdQuery.exec();
     int patient_id{}; //doctorIdQuery.boundValue(0).toInt() + 1;
     while (patientIdQuery.next()) {
@@ -263,19 +288,27 @@ void MainWindow::on_btn_add_appointment_clicked()
         doctor_id = doctorIdQuery.value(0).toInt();
     }
 
+    qDebug() << "date: " << ui->calendarWidget_visit->selectedDate().toString("dd/MM/yy");
+    qDebug() << "patients_id: " << patient_id;
+    qDebug() << "doctors_id: " << doctor_id;
+    qDebug() << "diagnosis: " << ui->lineEdit_visitDiagnosis->text();
+    qDebug() << "repeated_visit: " << (ui->checkBox_repeatedVisit->isChecked() == true ? 1 : 0);
+    qDebug() << "price: " << ui->doubleSpinBox_visitPrice->value();
+
     // insert data into visits
     QSqlQuery query;
-    query.prepare("INSERT INTO visits (date, patients_id, doctors_id, diagnosis, repeated_visit, price) "
+    query.prepare(" INSERT INTO visits (date, patients_id, doctors_id, diagnosis, repeated_visit, price)"
                   "VALUES (:date, :patients_id, :doctors_id, :diagnosis, :repeated_visit, :price)");
     query.bindValue(":date",  ui->calendarWidget_visit->selectedDate().toString("dd/MM/yy"));
     query.bindValue(":patients_id", patient_id);
     query.bindValue(":doctors_id", doctor_id);
     query.bindValue(":diagnosis", ui->lineEdit_visitDiagnosis->text());
-    query.bindValue(":repeated_visit", ui->checkBox_repeatedVisit->isChecked());
+    query.bindValue(":repeated_visit", ui->checkBox_repeatedVisit->isChecked() == true ? 1 : 0);
     query.bindValue(":price", ui->doubleSpinBox_visitPrice->value());
     query.exec();
 
     ui->lineEdit_fullNameDoctor->clear();
+    ui->lineEdit_visitDiagnosis->clear();
     reloadTableVisits();
 
     doctorsModel->select();
@@ -331,7 +364,6 @@ void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
     ui->doubleSpinBox_visitPrice->setValue(index.sibling(index.row(), 6).data().toDouble());
 }
 
-
 void MainWindow::on_pushButton_statUpdate_clicked()
 {
     updateStat();
@@ -383,5 +415,3 @@ void MainWindow::updateStat() {
         ui->comboBox_statDoctor->addItem(name);
     }
 }
-
-

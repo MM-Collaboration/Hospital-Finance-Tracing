@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_appointments_list">
        <attribute name="title">
@@ -35,6 +35,9 @@
           </property>
           <property name="sizeAdjustPolicy">
            <enum>QAbstractScrollArea::AdjustIgnored</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
           </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -228,6 +231,9 @@
           <property name="autoScrollMargin">
            <number>16</number>
           </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
           <property name="sortingEnabled">
            <bool>true</bool>
           </property>
@@ -291,31 +297,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QComboBox" name="comboBox_doctorSpecialization">
-            <item>
-             <property name="text">
-              <string>ЛОР</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Хирург</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Психолог</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Терапевт</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Окулист</string>
-             </property>
-            </item>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -327,21 +311,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="comboBox_doctorQualification">
-            <item>
-             <property name="text">
-              <string>Вторая</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Первая</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Высшая</string>
-             </property>
-            </item>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -357,6 +329,9 @@
          <widget class="QTableView" name="tableView_patients">
           <property name="autoScrollMargin">
            <number>16</number>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
           </property>
           <property name="sortingEnabled">
            <bool>true</bool>
@@ -545,37 +520,64 @@
        <attribute name="title">
         <string>Статистика</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="3,1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="4,1">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0,1">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Цены всех приёмов</string>
+         <widget class="QTabWidget" name="tabWidget_2">
+          <property name="tabShape">
+           <enum>QTabWidget::Triangular</enum>
+          </property>
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <property name="movable">
+           <bool>true</bool>
+          </property>
+          <property name="tabBarAutoHide">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Tab 1</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Цены всех приёмов</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListView" name="listView_statAll"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Обзор</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableView" name="tableView_statReview"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>Tab 2</string>
+           </attribute>
+           <widget class="QWidget" name="widget" native="true">
+            <property name="geometry">
+             <rect>
+              <x>80</x>
+              <y>350</y>
+              <width>120</width>
+              <height>80</height>
+             </rect>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QListView" name="listView_statAll"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Обзор</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableView" name="tableView_statReview"/>
-          </item>
-         </layout>
+          </widget>
+         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox">
@@ -593,7 +595,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>217</width>
+                <width>169</width>
                 <height>394</height>
                </rect>
               </property>

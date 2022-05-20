@@ -33,6 +33,8 @@ public:
     void reloadTableDoctors();
     void reloadTablePatients();
     void reloadTableVisits();
+    void loadDoctorsSpecializationComboBox();
+    void loadDoctorsQualificationComboBox();
 
     void doctorsSubmit();
     void updateStat();
