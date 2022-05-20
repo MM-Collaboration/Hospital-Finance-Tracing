@@ -78,6 +78,7 @@ void MainWindow::reloadTableDoctors() {
     ui->tableView_doctors->hideColumn(0);
 
     ui->tableView_doctors->setModel(doctorsModel);
+    ui->tableView_doctors->setColumnHidden(0, true);
     ui->tableView_doctors->resizeColumnsToContents();
 }
 
@@ -94,6 +95,7 @@ void MainWindow::reloadTablePatients() {
 //    ui->tableView_patients->hideColumn(0);
 
     ui->tableView_patients->setModel(patientsModel);
+    ui->tableView_patients->setColumnHidden(0, true);
     ui->tableView_patients->resizeColumnsToContents();
 }
 
@@ -114,10 +116,10 @@ void MainWindow::reloadTableVisits() {
     visitsModel->setHeaderData(3, Qt::Horizontal, tr("Диагноз"));
     visitsModel->setHeaderData(4, Qt::Horizontal, tr("Повторный"));
     visitsModel->setHeaderData(5, Qt::Horizontal, tr("Цена"));
-    ui->tableView_visits->hideColumn(0);
 
 
     ui->tableView_visits->setModel(visitsModel);
+    ui->tableView_visits->setColumnHidden(0, true);
     ui->tableView_visits->resizeColumnsToContents();
 }
 
