@@ -41,6 +41,7 @@ private slots:
     // Actions
     void actionOpenFile();
     void actionAbout();
+    void updateStat();
 
 //    void submit();
 
@@ -53,6 +54,16 @@ private slots:
     void on_lineEdit_fullNameDoctor_textChanged();
 
     void on_lineEdit_fullNamePatient_textChanged();
+
+    void on_btn_add_appointment_clicked();
+
+    void on_tableView_patients_clicked(const QModelIndex &index);
+
+    void on_tableView_doctors_clicked(const QModelIndex &index);
+
+    void on_tableView_visits_clicked(const QModelIndex &index);
+
+    void on_pushButton_statUpdate_clicked();
 
 private:
     Ui::MainWindow *ui;
