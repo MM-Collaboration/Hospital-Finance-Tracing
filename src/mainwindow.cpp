@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     loadDoctorsSpecializationComboBox();
     loadDoctorsQualificationComboBox();
 
-    updateStat();
+    updateStatDoctorsCheckBox();
 }
 
 MainWindow::~MainWindow()
@@ -364,13 +364,8 @@ void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
     ui->doubleSpinBox_visitPrice->setValue(index.sibling(index.row(), 6).data().toDouble());
 }
 
-void MainWindow::on_pushButton_statUpdate_clicked()
+void MainWindow::updateStatAllList(QStringList &List)
 {
-    updateStat();
-    statListModel = new QStringListModel(this);
-
-    QStringList List;
-
     QSqlQuery doctorIdQuery = QSqlQuery();
     doctorIdQuery.prepare("SELECT id FROM doctors WHERE name=:doctor_name");
     doctorIdQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
@@ -378,10 +373,7 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     int doctor_id{};
     while (doctorIdQuery.next()) {
         doctor_id = doctorIdQuery.value(0).toInt();
-        qDebug() << "===========Doctor id: " << doctor_id;
     }
-    qDebug() << "Doctor id: " << doctor_id;
-    qDebug() << "comboBox_statDoctor->currentText: " <<  ui->comboBox_statDoctor->currentText();
 
     QSqlQuery query = QSqlQuery();
     query.prepare("SELECT price FROM visits WHERE doctors_id=:doctor_id");
@@ -395,18 +387,33 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     }
     qDebug() << "List: " << List;
 
+    statListModel = new QStringListModel(this);
     // Populate our model
     statListModel->setStringList(List);
 
     ui->listView_statAll->setModel(statListModel);
-//    QModelIndex modelIndex;
-//    statModel->insertRow(*statModelIndex, modelIndex);
-//    statModelIndex++;
-//    ui->tableView_statAll->setModel(statModel);
-//    ui->tableView_statAll
 }
 
-void MainWindow::updateStat() {
+void MainWindow::on_pushButton_statUpdate_clicked()
+{
+    updateStatDoctorsCheckBox();
+    QStringList List;
+    updateStatAllList(List);
+
+    // form doctor stat review
+    QString doctorFullName = ui->comboBox_statDoctor->currentText();
+    int visitCount = List.count();
+    float paidTotal {};
+    for (QString item: List) {
+        paidTotal += item.toFloat();
+    }
+    QString statReviewStr = QStringLiteral("Имя врача: %1\n"
+                                           "Количество приёмов: %2\n"
+                                           "Общая стоимость приёмов: %3").arg(doctorFullName).arg(visitCount).arg(paidTotal);
+    ui->textBrowser_statReview->setText(statReviewStr);
+}
+
+void MainWindow::updateStatDoctorsCheckBox() {
     // set statPatients combobox items
     QSqlQuery query("SELECT name FROM doctors");
     while (query.next()) {

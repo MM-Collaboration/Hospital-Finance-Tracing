@@ -37,11 +37,13 @@ public:
     void loadDoctorsQualificationComboBox();
 
     void doctorsSubmit();
-    void updateStat();
+    void updateStatDoctorsCheckBox();
 
     void activatePatientAddPushButton();
     void activateVisitAddPushButton();
 
+    void updateStatAllList(QStringList &);
+    
 protected:
 
 private slots:
