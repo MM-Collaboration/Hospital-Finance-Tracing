@@ -385,7 +385,6 @@ void MainWindow::updateStatAllList(QStringList &List)
         List.append(price);
 
     }
-    qDebug() << "List: " << List;
 
     statListModel = new QStringListModel(this);
     // Populate our model
