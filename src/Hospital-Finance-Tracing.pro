@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,11 +11,13 @@ CONFIG += c++11
 SOURCES += \
     connectdatabasedialog.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    statchart.cpp
 
 HEADERS += \
     connectdatabasedialog.h \
-    mainwindow.h
+    mainwindow.h \
+    statchart.h
 
 FORMS += \
     connectdatabasedialog.ui \
