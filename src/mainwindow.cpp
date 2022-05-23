@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_phoneNumberPatient->setValidator(new QRegExpValidator(QRegExp("(\\+7[1-9]{2}|8|[1-9]{3})([0-9]{8})"), ui->lineEdit_phoneNumberPatient));
     ui->lineEdit_fullNamePatient->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNamePatient));
     ui->lineEdit_fullNameDoctor->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNameDoctor));
+    ui->lineEdit_snils->setValidator(new QRegExpValidator(QRegExp("\\d{11}"), ui->lineEdit_snils));
 
     // Connect actions
     connect(ui->action_openFile, &QAction::triggered, this, &MainWindow::actionOpenFile);
@@ -132,6 +133,7 @@ void MainWindow::reloadTablePatients() {
     patientsModel->setHeaderData(1, Qt::Horizontal, tr("Имя"));
     patientsModel->setHeaderData(2, Qt::Horizontal, tr("Год рождения"));
     patientsModel->setHeaderData(3, Qt::Horizontal, tr("Телефон"));
+    patientsModel->setHeaderData(4, Qt::Horizontal, tr("СНИЛС"));
 
     ui->tableView_patients->setModel(patientsModel);
     ui->tableView_patients->setColumnHidden(0, true);
@@ -192,11 +194,12 @@ void MainWindow::actionAbout() {
 void MainWindow::on_btn_add_patient_clicked()
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO patients (name, date_of_birth, phone_number)"
-                  "VALUES (:name, :date_of_birth, :phone_number)");
+    query.prepare("INSERT INTO patients (name, date_of_birth, phone_number, snils)"
+                  "VALUES (:name, :date_of_birth, :phone_number, :snils)");
     query.bindValue(":name", ui->lineEdit_fullNamePatient->text());
     query.bindValue(":date_of_birth", ui->dateEdit_yearOfBirthPatient->dateTime().toString("yyyy"));
     query.bindValue(":phone_number", ui->lineEdit_phoneNumberPatient->text());
+    query.bindValue(":snils", ui->lineEdit_snils->text());
     query.exec();
 
     ui->lineEdit_fullNamePatient->clear();
@@ -230,7 +233,10 @@ void MainWindow::on_btn_add_doctor_clicked()
 
 void MainWindow::activatePatientAddPushButton() {
     int phoneNumberLength = ui->lineEdit_phoneNumberPatient->text().length();
-    if (!ui->lineEdit_fullNamePatient->text().isEmpty() && (!ui->lineEdit_phoneNumberPatient->text().isEmpty() && ((ui->lineEdit_phoneNumberPatient->text().split("")[1] == "+") ? (phoneNumberLength >= 12) : (phoneNumberLength >= 11)))) {
+    bool validPhoneNumber = (!ui->lineEdit_phoneNumberPatient->text().isEmpty() && ((ui->lineEdit_phoneNumberPatient->text().split("")[1] == "+") ? (phoneNumberLength >= 12) : (phoneNumberLength >= 11)));
+    bool validFullName = !ui->lineEdit_fullNamePatient->text().isEmpty();
+    bool validSnilsNumber = (!ui->lineEdit_snils->text().isEmpty() && ui->lineEdit_snils->text().length() == 11);
+    if (validFullName && validPhoneNumber && validSnilsNumber) {
         ui->btn_add_patient->setEnabled(true);
     } else if (ui->btn_add_patient->isEnabled()) {
         ui->btn_add_patient->setEnabled(false);
@@ -315,11 +321,16 @@ void MainWindow::on_tableView_patients_clicked(const QModelIndex &index)
     ui->lineEdit_fullNamePatient->setText(index.sibling(index.row(), 1).data().toString());
 //    ui->dateEdit_yearOfBirthPatient->setDate(index.sibling(index.row(), 2).data().toDate());
 //    qDebug() << "index.sibling(index.row(), 1).data().toDate()): " << QString("12-12-" + index.sibling(index.row(), 2).data().toString());
+    ui->lineEdit_snils->setText(index.sibling(index.row(), 4).data().toString());
+
     QString phone_number = index.sibling(index.row(), 3).data().toString();
+    QString snils_number = index.sibling(index.row(), 4).data().toString();
     if (phone_number != QString("0")) {
         ui->lineEdit_phoneNumberPatient->setText(phone_number);
+        ui->lineEdit_snils->setText(snils_number);
     } else {
         ui->lineEdit_phoneNumberPatient->setText("");
+        ui->lineEdit_snils->setText("");
     }
 }
 
@@ -667,4 +678,11 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     updateDoctorStat();
     updateLatestVisitsStat();
     updatePatientVisitsStat();
+
 }
+
+void MainWindow::on_lineEdit_snils_textChanged(const QString &arg1)
+{
+    activatePatientAddPushButton();
+}
+

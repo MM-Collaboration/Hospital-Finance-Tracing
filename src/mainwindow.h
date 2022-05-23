@@ -89,21 +89,19 @@ private slots:
 
     void on_lineEdit_visitDiagnosis_textChanged(const QString &arg1);
 
-private:
+    void on_lineEdit_snils_textChanged(const QString &arg1);
+
+    private:
     Ui::MainWindow *ui;
-    StatChart *m_statChart;
+    StatChart *m_doctorDonatStatChart;
 
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
-    int *statModelIndex = 0;
     QStringListModel *statListModel;
-    QModelIndex *statModel;
     QSqlTableModel *doctorsModel;
     QSqlTableModel *patientsModel;
     QSqlRelationalTableModel *visitsModel;
     QSqlDatabase db;
-
-    double *statPriceList;
 
     // Regular expresions
     QRegExp *fullNameRegExp;

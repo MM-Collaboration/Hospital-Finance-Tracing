@@ -25,7 +25,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="movable">
        <bool>true</bool>
@@ -396,7 +396,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEdit_fullNamePatient"/>
           </item>
-          <item row="8" column="0" colspan="2">
+          <item row="9" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_14">
             <item>
              <widget class="QPushButton" name="btn_edit_patient">
@@ -420,7 +420,7 @@
             </item>
            </layout>
           </item>
-          <item row="7" column="0" colspan="2">
+          <item row="8" column="0" colspan="2">
            <spacer name="verticalSpacer_4">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -555,6 +555,53 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>Номер СНИЛС</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_snils">
+            <property name="cursor">
+             <cursorShape>IBeamCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string/>
+            </property>
+            <property name="accessibleName">
+             <string/>
+            </property>
+            <property name="accessibleDescription">
+             <string/>
+            </property>
+            <property name="inputMethodHints">
+             <set>Qt::ImhNone</set>
+            </property>
+            <property name="maxLength">
+             <number>11</number>
+            </property>
+            <property name="dragEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="placeholderText">
+             <string>000 000 000 00</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -602,7 +649,10 @@
  }</string>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
+          </property>
+          <property name="movable">
+           <bool>true</bool>
           </property>
           <widget class="QWidget" name="doctors">
            <attribute name="title">
@@ -618,7 +668,7 @@
                <enum>QTabWidget::Triangular</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <property name="movable">
                <bool>true</bool>
@@ -675,7 +725,7 @@
               </widget>
               <widget class="QWidget" name="tab_charts">
                <attribute name="title">
-                <string>Tab 2</string>
+                <string>Круговая диаграмма</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
