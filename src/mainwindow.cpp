@@ -357,6 +357,51 @@ void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
     ui->doubleSpinBox_visitPrice->setValue(index.sibling(index.row(), 6).data().toDouble());
 }
 
+void MainWindow::updateStatDoctorsCheckBox() {
+    // set statPatients combobox items
+
+    QString currentName = ui->comboBox_statDoctor->currentText();
+
+    while (ui->comboBox_statDoctor->count()) {
+        ui->comboBox_statDoctor->removeItem(0);
+    }
+
+    QSqlQuery query("SELECT name FROM doctors");
+    while (query.next()) {
+        QString name = query.value(0).toString();
+        ui->comboBox_statDoctor->addItem(name);
+    }
+
+    // restore selected name
+    int index = ui->comboBox_statDoctor->findText(currentName);
+    if (index != -1) { // -1 not found
+        ui->comboBox_statDoctor->setCurrentIndex(index);
+    }
+}
+
+void MainWindow::updateStatPatientsCheckBox()
+{
+    // set statPatients combobox items
+
+    QString currentName = ui->comboBox_statPatient->currentText();
+
+    while (ui->comboBox_statPatient->count()) {
+        ui->comboBox_statPatient->removeItem(0);
+    }
+
+    QSqlQuery query("SELECT name FROM patients");
+    while (query.next()) {
+        QString name = query.value(0).toString();
+        ui->comboBox_statPatient->addItem(name);
+    }
+
+    // restore selected name
+    int index = ui->comboBox_statPatient->findText(currentName);
+    if (index != -1) { // -1 not found
+        ui->comboBox_statPatient->setCurrentIndex(index);
+    }
+}
+
 void MainWindow::updateDoctorStat()
 {
     QVector<int> patients_id;
@@ -440,29 +485,6 @@ void MainWindow::updateDoctorStat()
                                            "Количество приёмов: %2\n"
                                            "Общая стоимость приёмов: %3").arg(doctorFullName).arg(patientsName.count()).arg(paidTotal);
     ui->textBrowser_statReview->setText(statReviewStr);
-}
-
-void MainWindow::updateStatPatientsCheckBox()
-{
-    // set statPatients combobox items
-
-    QString currentName = ui->comboBox_statPatient->currentText();
-
-    while (ui->comboBox_statPatient->count()) {
-        ui->comboBox_statPatient->removeItem(0);
-    }
-
-    QSqlQuery query("SELECT name FROM patients");
-    while (query.next()) {
-        QString name = query.value(0).toString();
-        ui->comboBox_statPatient->addItem(name);
-    }
-
-    // restore selected name
-    int index = ui->comboBox_statPatient->findText(currentName);
-    if (index != -1) { // -1 not found
-        ui->comboBox_statPatient->setCurrentIndex(index);
-    }
 }
 
 void MainWindow::updateLatestVisitsStat()
@@ -645,26 +667,4 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     updateDoctorStat();
     updateLatestVisitsStat();
     updatePatientVisitsStat();
-}
-
-void MainWindow::updateStatDoctorsCheckBox() {
-    // set statPatients combobox items
-
-    QString currentName = ui->comboBox_statDoctor->currentText();
-
-    while (ui->comboBox_statDoctor->count()) {
-        ui->comboBox_statDoctor->removeItem(0);
-    }
-
-    QSqlQuery query("SELECT name FROM doctors");
-    while (query.next()) {
-        QString name = query.value(0).toString();
-        ui->comboBox_statDoctor->addItem(name);
-    }
-
-    // restore selected name
-    int index = ui->comboBox_statDoctor->findText(currentName);
-    if (index != -1) { // -1 not found
-        ui->comboBox_statDoctor->setCurrentIndex(index);
-    }
 }
