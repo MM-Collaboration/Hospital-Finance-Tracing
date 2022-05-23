@@ -54,6 +54,8 @@ public:
 
     void updateLatestVisitsStat();
 
+    void updatePatientVisitsStat();
+
     protected:
 
 private slots:

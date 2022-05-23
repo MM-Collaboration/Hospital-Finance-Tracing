@@ -291,13 +291,6 @@ void MainWindow::on_btn_add_appointment_clicked()
         doctor_id = doctorIdQuery.value(0).toInt();
     }
 
-    qDebug() << "date: " << ui->calendarWidget_visit->selectedDate().toString("yy/MM/dd");
-    qDebug() << "patients_id: " << patient_id;
-    qDebug() << "doctors_id: " << doctor_id;
-    qDebug() << "diagnosis: " << ui->lineEdit_visitDiagnosis->text();
-    qDebug() << "repeated_visit: " << (ui->checkBox_repeatedVisit->isChecked() == true ? 1 : 0);
-    qDebug() << "price: " << ui->doubleSpinBox_visitPrice->value();
-
     // insert data into visits
     QSqlQuery query;
     query.prepare(" INSERT INTO visits (date, patients_id, doctors_id, diagnosis, repeated_visit, price)"
@@ -555,14 +548,8 @@ void MainWindow::updateLatestVisitsStat()
     ui->tableWidget_patientsStat->resizeColumnsToContents();
 }
 
-void MainWindow::on_pushButton_statUpdate_clicked()
+void MainWindow::updatePatientVisitsStat()
 {
-    updateStatDoctorsCheckBox();
-    updateStatPatientsCheckBox();
-
-    updateDoctorStat();
-    updateLatestVisitsStat();
-
     QVector<QDate> dates;
     QVector<int> doctors_id;
     QVector<double> prices;
@@ -587,7 +574,6 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     visitQuery.bindValue(":patient_id", patient_id);
     if (visitQuery.exec()) {
         while (visitQuery.next()) {
-            qDebug() << "RUNNING visitQuery QUERY";
             dates.append(visitQuery.value(0).toDate());
             doctors_id.append(visitQuery.value(1).toInt());
             prices.append(visitQuery.value(2).toDouble());
@@ -596,12 +582,6 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     } else {
         qDebug() << "select id from patients where name=:patient_name: " << "failed to exec";
     }
-
-    qDebug() << "patient_id: " << patient_id;
-    qDebug() << dates;
-    qDebug() << doctors_id;
-    qDebug() << prices;
-    qDebug() << repeated_visits;
 
     //  get doctors name
     for (int doctor_id: doctors_id) {
@@ -655,6 +635,16 @@ void MainWindow::on_pushButton_statUpdate_clicked()
                                            "Количество приёмов: %2\n"
                                            "Общая стоимость приёмов: %3").arg(patientFullName).arg(doctorsNames.count()).arg(paidTotal);
     ui->textBrowser_patientReview->setText(patientReviewStr);
+}
+
+void MainWindow::on_pushButton_statUpdate_clicked()
+{
+    updateStatDoctorsCheckBox();
+    updateStatPatientsCheckBox();
+
+    updateDoctorStat();
+    updateLatestVisitsStat();
+    updatePatientVisitsStat();
 }
 
 void MainWindow::updateStatDoctorsCheckBox() {
