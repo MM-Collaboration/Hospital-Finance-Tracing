@@ -472,8 +472,13 @@ void MainWindow::updateStatPatientsCheckBox()
     }
 }
 
-void MainWindow::updateLastPatientsVisits()
+void MainWindow::on_pushButton_statUpdate_clicked()
 {
+    updateStatDoctorsCheckBox();
+    updateStatPatientsCheckBox();
+
+    updateDoctorStat();
+
     QVector<QDate> dates;
     QVector<int> patients_id;
     QVector<int> doctors_id;
@@ -485,7 +490,7 @@ void MainWindow::updateLastPatientsVisits()
     // get patient date, patients_id, doctors_id, price, repeated_visit
     QSqlQuery visitQuery = QSqlQuery();
     visitQuery.prepare("SELECT date, patients_id, doctors_id, price, repeated_visit  FROM visits t1 WHERE date = (SELECT max(date) from visits WHERE patients_id = t1.patients_id);");
-//    visitQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
+    visitQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
     visitQuery.exec();
     while (visitQuery.next()) {
         dates.append(visitQuery.value(0).toDate());
@@ -550,76 +555,6 @@ void MainWindow::updateLastPatientsVisits()
             repeatedVisitText = "Нет";
         }
         ui->tableWidget_patientsStat->setItem(row, 4, new QTableWidgetItem(QIcon(repeatedVisitMarkIconPath), repeatedVisitText));
-    }
-
-    ui->tableWidget_patientsStat->resizeColumnsToContents();
-}
-
-void MainWindow::on_pushButton_statUpdate_clicked()
-{
-    updateStatDoctorsCheckBox();
-    updateStatPatientsCheckBox();
-
-    updateDoctorStat();
-    updateLastPatientsVisits();
-
-    QVector<QDate> dates;
-    QVector<int> doctors_id;
-    QVector<double> prices;
-    QVector<bool> repeated_visits;
-    QVector<QString> doctorsNames;
-
-    // get patient date, doctors_id, price, repeated_visit
-    QSqlQuery visitQuery = QSqlQuery();
-    visitQuery.prepare("SELECT date, doctors_id, price, repeated_visit FROM visits WHERE patients_id=patient_id");
-    visitQuery.bindValue(":patient_id",  ui->comboBox_statPatient->currentText());
-    visitQuery.exec();
-    while (visitQuery.next()) {
-        dates.append(visitQuery.value(0).toDate());
-        doctors_id.append(visitQuery.value(1).toInt());
-        prices.append(visitQuery.value(2).toDouble());
-        repeated_visits.append(visitQuery.value(3).toBool());
-    }
-
-    //  get doctors name
-    for (int doctor_id: doctors_id) {
-        QSqlQuery doctorQuery = QSqlQuery();
-        doctorQuery .prepare("SELECT name FROM doctors WHERE id=:doctor_id");
-        doctorQuery.bindValue(":doctor_id", doctor_id);
-        if (doctorQuery.exec()) {
-            while(doctorQuery.next()) {
-                doctorsNames.append(doctorQuery.value(0).toString());
-            }
-        } else {
-            qDebug() << "SELECT name FROM doctors WHERE id=:doctor_id: " << "doctorQuery not exec()";
-        }
-    }
-
-    // fill doctorStat table
-    QStringList patientStatHorizontalHeaderLabels;
-    patientStatHorizontalHeaderLabels.append("Дата");
-    patientStatHorizontalHeaderLabels.append("Врач");
-    patientStatHorizontalHeaderLabels.append("Цена");
-    patientStatHorizontalHeaderLabels.append("Повторный приём");
-    ui->tableWidget_patientsStat->setColumnCount(patientStatHorizontalHeaderLabels.count());
-    ui->tableWidget_patientsStat->setRowCount(doctorsNames.count());
-    ui->tableWidget_patientsStat->setHorizontalHeaderLabels(patientStatHorizontalHeaderLabels);
-
-    for (int row = 0; row < doctorsNames.count(); row++) {
-        ui->tableWidget_patientsStat->setItem(row, 0, new QTableWidgetItem(dates[row].toString("yy/MM/dd")));
-        ui->tableWidget_patientsStat->setItem(row, 1, new QTableWidgetItem(doctorsNames[row]));
-        ui->tableWidget_patientsStat->setItem(row, 2, new QTableWidgetItem(QString().number(prices[row])));
-
-        QString repeatedVisitMarkIconPath;
-        QString repeatedVisitText;
-        if (repeated_visits[row]) {
-            repeatedVisitMarkIconPath = ":/icons/checkMarkTrue";
-            repeatedVisitText = "Да";
-        } else {
-            repeatedVisitMarkIconPath = ":/icons/checkMarkFalse";
-            repeatedVisitText = "Нет";
-        }
-        ui->tableWidget_patientsStat->setItem(row, 3, new QTableWidgetItem(QIcon(repeatedVisitMarkIconPath), repeatedVisitText));
     }
 
     ui->tableWidget_patientsStat->resizeColumnsToContents();
