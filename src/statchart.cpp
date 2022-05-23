@@ -9,14 +9,10 @@ StatChart::StatChart(QWidget *parent)
 
     // create series
     m_series = new QPieSeries();
-    m_series->append("Hello", 1);
-    m_series->append("ASD", 2);
-    m_series->append("aASDASDA", 3);
-    m_series->append("NoOtherWay", 4);
-    m_series->append("Dark_Side", 5);
+    m_series->append("Нет данных", 1);
     m_series->setLabelsVisible();
 
-    m_slice = new QPieSlice();
+//    m_slice = new QPieSlice();
 //    m_slice = m_series->slices().at(1);
 //    m_slice->setExploded();
 //    m_slice->setLabelVisible();
@@ -24,16 +20,23 @@ StatChart::StatChart(QWidget *parent)
 //    m_slice->setBrush(Qt::green);
 
     // create chart
-    QChart *chart = new QChart;
-    chart->addSeries(m_series);
-    chart->setTitle("Doctors statistic");
-    chart->setAnimationOptions(QChart::AllAnimations);
+    m_chart = new QChart();
+    m_chart->addSeries(m_series);
+    m_chart->setTitle("Doctors statistic");
+    m_chart->setAnimationOptions(QChart::AllAnimations);
+    m_chart->legend()->setAlignment(Qt::AlignRight);
 
     // create chart view
-    m_chartView = new QChartView(chart);
+    m_chartView = new QChartView(m_chart);
 
     // create main layout
     QGridLayout *baseLayout = new QGridLayout();
     baseLayout->addWidget(m_chartView, 1, 2);
     setLayout(baseLayout);
+}
+
+void StatChart::loadSeries(QPieSeries *series) {
+    m_series = series;
+    m_chart->removeAllSeries();
+    m_chart->addSeries(series);
 }

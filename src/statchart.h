@@ -25,13 +25,22 @@ class StatChart : public QWidget
     public:
         explicit StatChart(QWidget *parent = nullptr);
 
+        void loadSeries(QPieSeries *);
+
+        struct Pie_t {
+            QString name;
+            float value;
+        };
+
     signals:
 
     private:
         QChartView *m_chartView;
         QPieSeries *m_series;
         QPieSlice *m_slice;
+        QChart *m_chart;
 
+//        QVector<Pie_t*>;
 };
 
 #endif // STATCHART_H

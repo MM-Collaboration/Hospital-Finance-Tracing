@@ -45,3 +45,6 @@ DISTFILES += \
     ui_base/preview_img/preview_07.png \
     ui_base/preview_img/preview_08.png \
     ui_base/preview_img/preview_09.png
+
+RESOURCES += \
+    assets/icons/resources.qrc

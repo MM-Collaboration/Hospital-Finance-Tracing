@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "statchart.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -30,11 +31,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     reloadTableDoctors();
     reloadTablePatients();
+
     reloadTableVisits();
     loadDoctorsSpecializationComboBox();
     loadDoctorsQualificationComboBox();
 
+    m_statChart = new StatChart(parent);
+    ui->verticalLayout_charts->addWidget(m_statChart);
+
     updateStatDoctorsCheckBox();
+    updateStatPatientsCheckBox();
 }
 
 MainWindow::~MainWindow()
@@ -111,7 +117,6 @@ void MainWindow::reloadTableDoctors() {
     }
     while (query.next()) {
         QString name = query.value(0).toString();
-        qDebug() << "Doctor name: " << name;
         ui->comboBox_vistDoctor->addItem(name);
     }
 }
@@ -139,7 +144,6 @@ void MainWindow::reloadTablePatients() {
     }
     while (query.next()) {
         QString name = query.value(0).toString();
-        qDebug() << "Patient name: " << name;
         ui->comboBox_vistPatient->addItem(name);
     }
 }
@@ -187,7 +191,6 @@ void MainWindow::actionAbout() {
 
 void MainWindow::on_btn_add_patient_clicked()
 {
-    qDebug() << " ui->dateEdit_yearOfBirthPatient->dateTime().toString(dd/MM/yy))" <<  ui->dateEdit_yearOfBirthPatient->dateTime().toString("dd/MM/yyyy");
     QSqlQuery query;
     query.prepare("INSERT INTO patients (name, date_of_birth, phone_number)"
                   "VALUES (:name, :date_of_birth, :phone_number)");
@@ -288,7 +291,7 @@ void MainWindow::on_btn_add_appointment_clicked()
         doctor_id = doctorIdQuery.value(0).toInt();
     }
 
-    qDebug() << "date: " << ui->calendarWidget_visit->selectedDate().toString("dd/MM/yy");
+    qDebug() << "date: " << ui->calendarWidget_visit->selectedDate().toString("yy/MM/dd");
     qDebug() << "patients_id: " << patient_id;
     qDebug() << "doctors_id: " << doctor_id;
     qDebug() << "diagnosis: " << ui->lineEdit_visitDiagnosis->text();
@@ -299,7 +302,7 @@ void MainWindow::on_btn_add_appointment_clicked()
     QSqlQuery query;
     query.prepare(" INSERT INTO visits (date, patients_id, doctors_id, diagnosis, repeated_visit, price)"
                   "VALUES (:date, :patients_id, :doctors_id, :diagnosis, :repeated_visit, :price)");
-    query.bindValue(":date",  ui->calendarWidget_visit->selectedDate().toString("dd/MM/yy"));
+    query.bindValue(":date",  ui->calendarWidget_visit->selectedDate().toString("yy/MM/dd"));
     query.bindValue(":patients_id", patient_id);
     query.bindValue(":doctors_id", doctor_id);
     query.bindValue(":diagnosis", ui->lineEdit_visitDiagnosis->text());
@@ -316,8 +319,6 @@ void MainWindow::on_btn_add_appointment_clicked()
 
 void MainWindow::on_tableView_patients_clicked(const QModelIndex &index)
 {
-    qDebug() << "Patient current row: " << index.row();
-    qDebug() << "Patient current data: " << index.sibling(index.row(), 1).data().toString();
     ui->lineEdit_fullNamePatient->setText(index.sibling(index.row(), 1).data().toString());
 //    ui->dateEdit_yearOfBirthPatient->setDate(index.sibling(index.row(), 2).data().toDate());
 //    qDebug() << "index.sibling(index.row(), 1).data().toDate()): " << QString("12-12-" + index.sibling(index.row(), 2).data().toString());
@@ -358,14 +359,20 @@ void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
     }
 
     bool repeated_visit_flag = index.sibling(index.row(), 5).data().toBool();
-    qDebug() << "repeated_visit_flag: " << repeated_visit_flag;
     ui->checkBox_repeatedVisit->setChecked(repeated_visit_flag);
 
     ui->doubleSpinBox_visitPrice->setValue(index.sibling(index.row(), 6).data().toDouble());
 }
 
-void MainWindow::updateStatAllList(QStringList &List)
+void MainWindow::updateDoctorStat()
 {
+    QVector<int> patients_id;
+    QVector<QString> patientsName;
+    QVector<double> prices;
+    QVector<QDate> dates;
+    QVector<bool> repeated_visits;
+
+    // get doctor id
     QSqlQuery doctorIdQuery = QSqlQuery();
     doctorIdQuery.prepare("SELECT id FROM doctors WHERE name=:doctor_name");
     doctorIdQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
@@ -375,49 +382,276 @@ void MainWindow::updateStatAllList(QStringList &List)
         doctor_id = doctorIdQuery.value(0).toInt();
     }
 
+    // get price and patients price, patients_id, date, repeated_visit
     QSqlQuery query = QSqlQuery();
-    query.prepare("SELECT price FROM visits WHERE doctors_id=:doctor_id");
+    query.prepare("SELECT price, patients_id, date, repeated_visit FROM visits WHERE doctors_id=:doctor_id");
     query.bindValue(":doctor_id", doctor_id);
-    query.exec();
-    while (query.next()) {
-        QString price = query.value(0).toString();
-        qDebug() << "Doctor price: " << price;
-        List.append(price);
-
+    if (query.exec()) {
+        while (query.next()) {
+            patients_id.append(query.value(1).toInt());
+            prices.append(query.value(0).toInt());
+            dates.append(query.value(2).toDate());
+            repeated_visits.append(query.value(3).toBool());
+        }
+    } else {
+        qDebug() << "SELECT price FROM visits WHERE doctors_id=:doctor_id: " << "query not exec()";
     }
 
-    statListModel = new QStringListModel(this);
-    // Populate our model
-    statListModel->setStringList(List);
+    //  get paitent name
+    for (int patient_id: patients_id) {
+        QSqlQuery patientQuery = QSqlQuery();
+        query.prepare("SELECT name FROM patients WHERE id=:patient_id");
+        query.bindValue(":patient_id", patient_id);
+        if (query.exec()) {
+            while(query.next()) {
+                patientsName.append(query.value(0).toString());
+            }
+        } else {
+            qDebug() << "SELECT name FROM patients WHERE id=:patient_id: " << "query not exec()";
+        }
+    }
 
-    ui->listView_statAll->setModel(statListModel);
+    // fill doctorStat table
+    QStringList doctorStatHorizontalHeaderLabels;
+    doctorStatHorizontalHeaderLabels.append("Дата");
+    doctorStatHorizontalHeaderLabels.append("Пациент");
+    doctorStatHorizontalHeaderLabels.append("Цена");
+    doctorStatHorizontalHeaderLabels.append("Повторный приём");
+    ui->tableWidget_doctorStat->setColumnCount(doctorStatHorizontalHeaderLabels.count());
+    ui->tableWidget_doctorStat->setRowCount(patientsName.count());
+    ui->tableWidget_doctorStat->setHorizontalHeaderLabels(doctorStatHorizontalHeaderLabels);
+    for (int row = 0; row < patientsName.count(); row++) {
+        ui->tableWidget_doctorStat->setItem(row, 0, new QTableWidgetItem(dates[row].toString("yy/MM/dd")));
+        ui->tableWidget_doctorStat->setItem(row, 1, new QTableWidgetItem(patientsName[row]));
+        ui->tableWidget_doctorStat->setItem(row, 2, new QTableWidgetItem(QString().number(prices[row])));
+
+        QString repeatedVisitMarkIconPath;
+        QString repeatedVisitText;
+        if (repeated_visits[row]) {
+            repeatedVisitMarkIconPath = ":/icons/checkMarkTrue";
+            repeatedVisitText = "Да";
+        } else {
+            repeatedVisitMarkIconPath = ":/icons/checkMarkFalse";
+            repeatedVisitText = "Нет";
+        }
+        ui->tableWidget_doctorStat->setItem(row, 3, new QTableWidgetItem(QIcon(repeatedVisitMarkIconPath), repeatedVisitText));
+    }
+    ui->tableWidget_doctorStat->resizeColumnsToContents();
+
+    // form doctor stat review
+    QString doctorFullName = ui->comboBox_statDoctor->currentText();
+    ui->label_doctorVisits->setText(QStringLiteral("Приёмы %1").arg(doctorFullName));
+    double paidTotal = 0;
+    for (double price: prices) paidTotal += price;
+    QString statReviewStr = QStringLiteral("Врач: %1\n"
+                                           "Количество приёмов: %2\n"
+                                           "Общая стоимость приёмов: %3").arg(doctorFullName).arg(patientsName.count()).arg(paidTotal);
+    ui->textBrowser_statReview->setText(statReviewStr);
+}
+
+void MainWindow::updateStatPatientsCheckBox()
+{
+    // set statPatients combobox items
+
+    QString currentName = ui->comboBox_statPatient->currentText();
+
+    while (ui->comboBox_statPatient->count()) {
+        ui->comboBox_statPatient->removeItem(0);
+    }
+
+    QSqlQuery query("SELECT name FROM patients");
+    while (query.next()) {
+        QString name = query.value(0).toString();
+        ui->comboBox_statPatient->addItem(name);
+    }
+
+    // restore selected name
+    int index = ui->comboBox_statPatient->findText(currentName);
+    if (index != -1) { // -1 not found
+        ui->comboBox_statPatient->setCurrentIndex(index);
+    }
+}
+
+void MainWindow::updateLastPatientsVisits()
+{
+    QVector<QDate> dates;
+    QVector<int> patients_id;
+    QVector<int> doctors_id;
+    QVector<double> prices;
+    QVector<bool> repeated_visits;
+    QVector<QString> patientsNames;
+    QVector<QString> doctorsNames;
+
+    // get patient date, patients_id, doctors_id, price, repeated_visit
+    QSqlQuery visitQuery = QSqlQuery();
+    visitQuery.prepare("SELECT date, patients_id, doctors_id, price, repeated_visit  FROM visits t1 WHERE date = (SELECT max(date) from visits WHERE patients_id = t1.patients_id);");
+//    visitQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
+    visitQuery.exec();
+    while (visitQuery.next()) {
+        dates.append(visitQuery.value(0).toDate());
+        patients_id.append(visitQuery.value(1).toInt());
+        doctors_id.append(visitQuery.value(2).toInt());
+        prices.append(visitQuery.value(3).toDouble());
+        repeated_visits.append(visitQuery.value(4).toBool());
+    }
+
+    //  get paitents name
+    for (int patient_id: patients_id) {
+        QSqlQuery patientQuery = QSqlQuery();
+        patientQuery .prepare("SELECT name FROM patients WHERE id=:patient_id");
+        patientQuery.bindValue(":patient_id", patient_id);
+        if (patientQuery.exec()) {
+            while(patientQuery.next()) {
+                patientsNames.append(patientQuery.value(0).toString());
+            }
+        } else {
+            qDebug() << "SELECT name FROM patients WHERE id=:patient_id: " << "patientQuery not exec()";
+        }
+    }
+
+    //  get doctors name
+    for (int doctor_id: doctors_id) {
+        QSqlQuery doctorQuery = QSqlQuery();
+        doctorQuery .prepare("SELECT name FROM doctors WHERE id=:doctor_id");
+        doctorQuery.bindValue(":doctor_id", doctor_id);
+        if (doctorQuery.exec()) {
+            while(doctorQuery.next()) {
+                doctorsNames.append(doctorQuery.value(0).toString());
+            }
+        } else {
+            qDebug() << "SELECT name FROM doctors WHERE id=:doctor_id: " << "doctorQuery not exec()";
+        }
+    }
+
+    // fill doctorStat table
+    QStringList patientStatHorizontalHeaderLabels;
+    patientStatHorizontalHeaderLabels.append("Дата");
+    patientStatHorizontalHeaderLabels.append("Пациент");
+    patientStatHorizontalHeaderLabels.append("Врач");
+    patientStatHorizontalHeaderLabels.append("Цена");
+    patientStatHorizontalHeaderLabels.append("Повторный приём");
+    ui->tableWidget_patientsStat->setColumnCount(patientStatHorizontalHeaderLabels.count());
+    ui->tableWidget_patientsStat->setRowCount(patientsNames.count());
+    ui->tableWidget_patientsStat->setHorizontalHeaderLabels(patientStatHorizontalHeaderLabels);
+
+    for (int row = 0; row < patientsNames.count(); row++) {
+        ui->tableWidget_patientsStat->setItem(row, 0, new QTableWidgetItem(dates[row].toString("yy/MM/dd")));
+        ui->tableWidget_patientsStat->setItem(row, 1, new QTableWidgetItem(patientsNames[row]));
+        ui->tableWidget_patientsStat->setItem(row, 2, new QTableWidgetItem(doctorsNames[row]));
+        ui->tableWidget_patientsStat->setItem(row, 3, new QTableWidgetItem(QString().number(prices[row])));
+
+        QString repeatedVisitMarkIconPath;
+        QString repeatedVisitText;
+        if (repeated_visits[row]) {
+            repeatedVisitMarkIconPath = ":/icons/checkMarkTrue";
+            repeatedVisitText = "Да";
+        } else {
+            repeatedVisitMarkIconPath = ":/icons/checkMarkFalse";
+            repeatedVisitText = "Нет";
+        }
+        ui->tableWidget_patientsStat->setItem(row, 4, new QTableWidgetItem(QIcon(repeatedVisitMarkIconPath), repeatedVisitText));
+    }
+
+    ui->tableWidget_patientsStat->resizeColumnsToContents();
 }
 
 void MainWindow::on_pushButton_statUpdate_clicked()
 {
     updateStatDoctorsCheckBox();
-    QStringList List;
-    updateStatAllList(List);
+    updateStatPatientsCheckBox();
+
+    updateDoctorStat();
+    updateLastPatientsVisits();
+
+    QVector<QDate> dates;
+    QVector<int> doctors_id;
+    QVector<double> prices;
+    QVector<bool> repeated_visits;
+    QVector<QString> doctorsNames;
+
+    // get patient date, doctors_id, price, repeated_visit
+    QSqlQuery visitQuery = QSqlQuery();
+    visitQuery.prepare("SELECT date, doctors_id, price, repeated_visit FROM visits WHERE patients_id=patient_id");
+    visitQuery.bindValue(":patient_id",  ui->comboBox_statPatient->currentText());
+    visitQuery.exec();
+    while (visitQuery.next()) {
+        dates.append(visitQuery.value(0).toDate());
+        doctors_id.append(visitQuery.value(1).toInt());
+        prices.append(visitQuery.value(2).toDouble());
+        repeated_visits.append(visitQuery.value(3).toBool());
+    }
+
+    //  get doctors name
+    for (int doctor_id: doctors_id) {
+        QSqlQuery doctorQuery = QSqlQuery();
+        doctorQuery .prepare("SELECT name FROM doctors WHERE id=:doctor_id");
+        doctorQuery.bindValue(":doctor_id", doctor_id);
+        if (doctorQuery.exec()) {
+            while(doctorQuery.next()) {
+                doctorsNames.append(doctorQuery.value(0).toString());
+            }
+        } else {
+            qDebug() << "SELECT name FROM doctors WHERE id=:doctor_id: " << "doctorQuery not exec()";
+        }
+    }
+
+    // fill doctorStat table
+    QStringList patientStatHorizontalHeaderLabels;
+    patientStatHorizontalHeaderLabels.append("Дата");
+    patientStatHorizontalHeaderLabels.append("Врач");
+    patientStatHorizontalHeaderLabels.append("Цена");
+    patientStatHorizontalHeaderLabels.append("Повторный приём");
+    ui->tableWidget_patientsStat->setColumnCount(patientStatHorizontalHeaderLabels.count());
+    ui->tableWidget_patientsStat->setRowCount(doctorsNames.count());
+    ui->tableWidget_patientsStat->setHorizontalHeaderLabels(patientStatHorizontalHeaderLabels);
+
+    for (int row = 0; row < doctorsNames.count(); row++) {
+        ui->tableWidget_patientsStat->setItem(row, 0, new QTableWidgetItem(dates[row].toString("yy/MM/dd")));
+        ui->tableWidget_patientsStat->setItem(row, 1, new QTableWidgetItem(doctorsNames[row]));
+        ui->tableWidget_patientsStat->setItem(row, 2, new QTableWidgetItem(QString().number(prices[row])));
+
+        QString repeatedVisitMarkIconPath;
+        QString repeatedVisitText;
+        if (repeated_visits[row]) {
+            repeatedVisitMarkIconPath = ":/icons/checkMarkTrue";
+            repeatedVisitText = "Да";
+        } else {
+            repeatedVisitMarkIconPath = ":/icons/checkMarkFalse";
+            repeatedVisitText = "Нет";
+        }
+        ui->tableWidget_patientsStat->setItem(row, 3, new QTableWidgetItem(QIcon(repeatedVisitMarkIconPath), repeatedVisitText));
+    }
+
+    ui->tableWidget_patientsStat->resizeColumnsToContents();
 
     // form doctor stat review
-    QString doctorFullName = ui->comboBox_statDoctor->currentText();
-    int visitCount = List.count();
-    float paidTotal {};
-    for (QString item: List) {
-        paidTotal += item.toFloat();
-    }
-    QString statReviewStr = QStringLiteral("Имя врача: %1\n"
-                                           "Количество приёмов: %2\n"
-                                           "Общая стоимость приёмов: %3").arg(doctorFullName).arg(visitCount).arg(paidTotal);
-    ui->textBrowser_statReview->setText(statReviewStr);
+//    QString doctorFullName = ui->comboBox_statDoctor->currentText();
+//    double paidTotal = 0;
+//    for (double price: prices) paidTotal += price;
+//    QString patientReviewStr= QStringLiteral("Врач: %1\n"
+//                                           "Количество приёмов: %2\n"
+//                                           "Общая стоимость приёмов: %3").arg(doctorFullName).arg(patientsName.count()).arg(paidTotal);
+//    ui->textBrowser_patientReview->setText(patientReviewStr);
 }
 
 void MainWindow::updateStatDoctorsCheckBox() {
     // set statPatients combobox items
+
+    QString currentName = ui->comboBox_statDoctor->currentText();
+
+    while (ui->comboBox_statDoctor->count()) {
+        ui->comboBox_statDoctor->removeItem(0);
+    }
+
     QSqlQuery query("SELECT name FROM doctors");
     while (query.next()) {
         QString name = query.value(0).toString();
-        qDebug() << "Doctors name: " << name;
         ui->comboBox_statDoctor->addItem(name);
+    }
+
+    // restore selected name
+    int index = ui->comboBox_statDoctor->findText(currentName);
+    if (index != -1) { // -1 not found
+        ui->comboBox_statDoctor->setCurrentIndex(index);
     }
 }

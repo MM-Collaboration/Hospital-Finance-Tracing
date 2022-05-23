@@ -1,7 +1,8 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "connectdatabasedialog.h"
+//#include "connectdatabasedialog.h"
+#include "statchart.h"
 
 #include <QMainWindow>
 #include <QMessageBox>
@@ -15,6 +16,7 @@
 #include <QStandardItem>
 #include <QSqlQuery>
 #include <QStringListModel>
+#include <QPieSeries>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,14 +39,20 @@ public:
     void loadDoctorsQualificationComboBox();
 
     void doctorsSubmit();
-    void updateStatDoctorsCheckBox();
 
     void activatePatientAddPushButton();
     void activateVisitAddPushButton();
 
-    void updateStatAllList(QStringList &);
+    void updateStatAllList(QStringList &, QPieSeries *);
     
-protected:
+    void updateDoctorStat();
+
+    void updateStatDoctorsCheckBox();
+    void updateStatPatientsCheckBox();
+
+    void updateLastPatientsVisits();
+
+    protected:
 
 private slots:
     // Actions
@@ -79,6 +87,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    StatChart *m_statChart;
 
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
