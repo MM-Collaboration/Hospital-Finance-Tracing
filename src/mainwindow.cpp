@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_doctorDonatStatChart = nullptr;
     m_doctorBarStatChart = nullptr;
     m_doctorLineStatChart = nullptr;
+    m_patientDonatStatChart = nullptr;
     ui->setupUi(this);
 
     if (createConnection()) {
@@ -552,17 +553,12 @@ void MainWindow::updateDoctorStat()
         qDebug() << "SELECT date FROM visits WHERE doctors_id=:doctor_id ORDER BY date DESC: " << "falid to exec";
     }
 
-    qDebug() << "max date" << maxDate;
-    qDebug() << "min date" << minDate;
-
     if (!maxDate.isNull()) {
         int daysRange = minDate.daysTo(maxDate);
         double step = daysRange / dates.count();
         double currentPosition = 0;
-        qDebug() << "daysRange: " << daysRange;
         for (int i = 0; i < dates.count(); i++) {
             *lineSeries << QPointF(currentPosition, prices[i]);
-            qDebug() << "QPountF: " << currentPosition << " " << prices[i];
             currentPosition += step;
         }
 
@@ -743,13 +739,29 @@ void MainWindow::updatePatientVisitsStat()
 
     // form doctor stat review
     QString patientFullName = ui->comboBox_statPatient->currentText();
-    ui->label_patientVisit->setText(QStringLiteral("Обращения %1").arg(patientFullName));
+    QString pageLabel = QStringLiteral("Обращения %1").arg(patientFullName);
+    ui->label_patientVisit->setText(pageLabel);
     double paidTotal = 0;
     for (double price: prices) paidTotal += price;
     QString patientReviewStr= QStringLiteral("Пациент: %1\n"
                                            "Количество приёмов: %2\n"
                                            "Общая стоимость приёмов: %3").arg(patientFullName).arg(doctorsNames.count()).arg(paidTotal);
     ui->textBrowser_patientReview->setText(patientReviewStr);
+
+
+    // fill donat chart
+    QPieSeries *series = new QPieSeries;
+    for (int i = 0; i < dates.count(); i ++) {
+        series->append(doctorsNames[i], prices[i]);
+    }
+
+    if (m_patientDonatStatChart != nullptr) {
+        delete m_patientDonatStatChart ;
+    }
+    m_patientDonatStatChart = new StatChart(this, &pageLabel);
+    m_patientDonatStatChart->loadSeries(series);
+
+    ui->verticalLayout_patientsPieChart->addWidget(m_patientDonatStatChart);
 }
 
 void MainWindow::on_pushButton_statUpdate_clicked()

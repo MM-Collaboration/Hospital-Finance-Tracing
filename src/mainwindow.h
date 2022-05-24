@@ -99,6 +99,10 @@ private slots:
     StatChart *m_doctorBarStatChart;
     StatChart *m_doctorLineStatChart;
 
+    StatChart *m_patientDonatStatChart;
+    StatChart *m_patientBarStatChart;
+    StatChart *m_patientLineStatChart;
+
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
     QStringListModel *statListModel;
