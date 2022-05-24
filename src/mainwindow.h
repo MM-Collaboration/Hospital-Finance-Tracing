@@ -33,24 +33,19 @@ public:
     ~MainWindow();
 
     bool createConnection();
-    void loadDatabase();
     void reloadTableDoctors();
     void reloadTablePatients();
     void reloadTableVisits();
     void loadDoctorsSpecializationComboBox();
     void loadDoctorsQualificationComboBox();
 
-    void doctorsSubmit();
-
     void activatePatientAddPushButton();
     void activateVisitAddPushButton();
-
-    void updateStatAllList(QStringList &, QPieSeries *);
     
-    void updateDoctorStat();
-
     void updateStatDoctorsCheckBox();
     void updateStatPatientsCheckBox();
+
+    void updateDoctorStat();
 
     void updateLastPatientsVisits();
 
@@ -65,11 +60,7 @@ private slots:
     void actionOpenFile();
     void actionAbout();
 
-//    void submit();
-
     void on_btn_add_patient_clicked();
-
-    void on_btn_edit_patient_clicked();
 
     void on_btn_add_doctor_clicked();
 

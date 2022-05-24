@@ -210,11 +210,6 @@ void MainWindow::on_btn_add_patient_clicked()
     patientsModel->select();
 }
 
-void MainWindow::on_btn_edit_patient_clicked()
-{
-
-}
-
 void MainWindow::on_btn_add_doctor_clicked()
 {
     QSqlQuery query;

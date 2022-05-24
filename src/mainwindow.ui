@@ -25,7 +25,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="movable">
        <bool>true</bool>
@@ -81,6 +81,26 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Пациент</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_vistPatient">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_18">
             <property name="enabled">
@@ -100,6 +120,16 @@
              <bool>true</bool>
             </property>
            </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Диагноз</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_visitDiagnosis"/>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_21">
@@ -137,63 +167,6 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QPushButton" name="btn_edit_appointment">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Изменить</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_add_appointment">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Добавить</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="comboBox_vistPatient">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Пациент</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="4" column="1">
            <widget class="QCheckBox" name="checkBox_repeatedVisit">
             <property name="text">
@@ -213,6 +186,13 @@
             </property>
            </widget>
           </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Цена</string>
+            </property>
+           </widget>
+          </item>
           <item row="5" column="1">
            <widget class="QDoubleSpinBox" name="doubleSpinBox_visitPrice">
             <property name="inputMethodHints">
@@ -229,22 +209,28 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_7">
+          <item row="7" column="1">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="9" column="0" colspan="2">
+           <widget class="QPushButton" name="btn_add_appointment">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
-             <string>Цена</string>
+             <string>Добавить</string>
             </property>
            </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Диагноз</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_visitDiagnosis"/>
           </item>
          </layout>
         </item>
@@ -295,16 +281,6 @@
           </item>
           <item row="7" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QPushButton" name="btn_edit_doctor">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Изменить</string>
-              </property>
-             </widget>
-            </item>
             <item>
              <widget class="QPushButton" name="btn_add_doctor">
               <property name="enabled">
@@ -401,43 +377,6 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEdit_fullNamePatient"/>
-          </item>
-          <item row="9" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_14">
-            <item>
-             <widget class="QPushButton" name="btn_edit_patient">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Изменить</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_add_patient">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Добавить</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="8" column="0" colspan="2">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_5">
@@ -608,6 +547,29 @@
             </property>
            </widget>
           </item>
+          <item row="8" column="0" colspan="2">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="9" column="0" colspan="2">
+           <widget class="QPushButton" name="btn_add_patient">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -655,7 +617,7 @@
  }</string>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="movable">
            <bool>true</bool>
@@ -674,7 +636,7 @@
                <enum>QTabWidget::Triangular</enum>
               </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <property name="movable">
                <bool>true</bool>
@@ -810,7 +772,7 @@
                <enum>QTabWidget::Triangular</enum>
               </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <property name="movable">
                <bool>true</bool>
@@ -1018,6 +980,9 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_saveFile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Сохранить</string>
    </property>
@@ -1026,6 +991,9 @@
    </property>
   </action>
   <action name="action_openFile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Открыть</string>
    </property>
@@ -1034,6 +1002,9 @@
    </property>
   </action>
   <action name="action_saveFileAs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Сохранить как...</string>
    </property>
@@ -1061,6 +1032,9 @@
    </property>
   </action>
   <action name="action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Экспортировать статистику как...</string>
    </property>
@@ -1071,6 +1045,9 @@
    </property>
   </action>
   <action name="action_connectDatabase">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Подключить базу данных</string>
    </property>
@@ -1084,15 +1061,12 @@
   <tabstop>lineEdit_fullNamePatient</tabstop>
   <tabstop>dateEdit_yearOfBirthPatient</tabstop>
   <tabstop>lineEdit_phoneNumberPatient</tabstop>
-  <tabstop>btn_edit_patient</tabstop>
-  <tabstop>btn_add_patient</tabstop>
   <tabstop>btn_add_doctor</tabstop>
   <tabstop>comboBox_doctorQualification</tabstop>
   <tabstop>comboBox_doctorSpecialization</tabstop>
   <tabstop>lineEdit_fullNameDoctor</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>tableView_doctors</tabstop>
-  <tabstop>btn_edit_doctor</tabstop>
   <tabstop>comboBox_vistDoctor</tabstop>
   <tabstop>tableView_visits</tabstop>
   <tabstop>comboBox_statPatient</tabstop>
