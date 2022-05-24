@@ -207,6 +207,7 @@ void MainWindow::on_btn_add_patient_clicked()
 
     ui->lineEdit_fullNamePatient->clear();
     ui->lineEdit_phoneNumberPatient->clear();
+    ui->lineEdit_snils->clear();
 
     reloadTablePatients();
 
