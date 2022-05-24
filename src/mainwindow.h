@@ -19,6 +19,7 @@
 #include <QPieSeries>
 #include <QBarSet>
 #include <QPointF>
+#include <QDate>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

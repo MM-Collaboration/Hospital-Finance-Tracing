@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_fullNameDoctor->setValidator(new QRegExpValidator(*fullNameRegExp, ui->lineEdit_fullNameDoctor));
     ui->lineEdit_snils->setValidator(new QRegExpValidator(QRegExp("\\d{11}"), ui->lineEdit_snils));
 
+    // restict calendar widget
+    ui->calendarWidget_visit->setMinimumDate((new QDate)->currentDate());
+
     // Connect actions
     connect(ui->action_openFile, &QAction::triggered, this, &MainWindow::actionOpenFile);
     // Help menu
