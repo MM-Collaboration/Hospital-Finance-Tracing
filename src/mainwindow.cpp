@@ -9,7 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
     doctorsModel = nullptr;
     patientsModel = nullptr;
     visitsModel = nullptr;
-    statModel = nullptr;
+    m_doctorDonatStatChart = nullptr;
+    m_doctorBarStatChart = nullptr;
+    m_doctorLineStatChart = nullptr;
     ui->setupUi(this);
 
     if (createConnection()) {
@@ -36,9 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
     reloadTableVisits();
     loadDoctorsSpecializationComboBox();
     loadDoctorsQualificationComboBox();
-
-    m_statChart = new StatChart(parent);
-    ui->verticalLayout_charts->addWidget(m_statChart);
 
     updateStatDoctorsCheckBox();
     updateStatPatientsCheckBox();
@@ -422,11 +421,11 @@ void MainWindow::updateDoctorStat()
     QVector<bool> repeated_visits;
 
     // get doctor id
+    int doctor_id{};
     QSqlQuery doctorIdQuery = QSqlQuery();
     doctorIdQuery.prepare("SELECT id FROM doctors WHERE name=:doctor_name");
     doctorIdQuery.bindValue(":doctor_name",  ui->comboBox_statDoctor->currentText());
     doctorIdQuery.exec();
-    int doctor_id{};
     while (doctorIdQuery.next()) {
         doctor_id = doctorIdQuery.value(0).toInt();
     }
@@ -489,13 +488,96 @@ void MainWindow::updateDoctorStat()
 
     // form doctor stat review
     QString doctorFullName = ui->comboBox_statDoctor->currentText();
-    ui->label_doctorVisits->setText(QStringLiteral("Приёмы %1").arg(doctorFullName));
+    QString pageLabel = QStringLiteral("Приёмы %1").arg(doctorFullName);
+    ui->label_doctorVisits->setText(pageLabel);
     double paidTotal = 0;
     for (double price: prices) paidTotal += price;
     QString statReviewStr = QStringLiteral("Врач: %1\n"
                                            "Количество приёмов: %2\n"
                                            "Общая стоимость приёмов: %3").arg(doctorFullName).arg(patientsName.count()).arg(paidTotal);
     ui->textBrowser_statReview->setText(statReviewStr);
+
+    // fill donat chart
+    QPieSeries *series = new QPieSeries;
+//    series->setName("testName");
+//    QPieSlice *slice = series->append(patientsName[0], prices[0]);
+//    slice->setExploded();
+    for (int i = 0; i < dates.count(); i ++) {
+        series->append(patientsName[i], prices[i]);
+    }
+
+    if (m_doctorDonatStatChart != nullptr) {
+        delete m_doctorDonatStatChart;
+    }
+    m_doctorDonatStatChart = new StatChart(this, &pageLabel);
+    m_doctorDonatStatChart->loadSeries(series);
+
+    // fill bar chart
+    QBarSeries *barSeries = new QBarSeries();
+    for (int i = 0; i < dates.count(); i++) {
+        QBarSet *set = new QBarSet(patientsName[i]);
+        *set << prices[i];
+        barSeries->append(set);
+    }
+
+    if (m_doctorBarStatChart != nullptr) {
+        delete m_doctorBarStatChart;
+    }
+    m_doctorBarStatChart = new StatChart(this, &pageLabel);
+    m_doctorBarStatChart ->loadSeries(barSeries);
+
+    // fill line chart
+    QLineSeries *lineSeries = new QLineSeries();
+
+    // get min and max date
+    QDate maxDate;
+    QSqlQuery maxDateQuery = QSqlQuery();
+    maxDateQuery .prepare("SELECT date FROM visits WHERE doctors_id=:doctor_id ORDER BY date");
+    maxDateQuery .bindValue(":doctor_id",  doctor_id);
+    maxDateQuery.exec();
+    while(maxDateQuery.next()) {
+        maxDate = maxDateQuery.value(0).toDate();
+    }
+
+    QDate minDate;
+    QSqlQuery minDateQuery = QSqlQuery();
+    minDateQuery.prepare("SELECT date FROM visits WHERE doctors_id=:doctor_id ORDER BY date DESC");
+    minDateQuery.bindValue(":doctor_id",  doctor_id);
+
+    if (minDateQuery.exec()) {
+        while(minDateQuery.next()) {
+            minDate = minDateQuery.value(0).toDate();
+        }
+    } else {
+        qDebug() << "SELECT date FROM visits WHERE doctors_id=:doctor_id ORDER BY date DESC: " << "falid to exec";
+    }
+
+    qDebug() << "max date" << maxDate;
+    qDebug() << "min date" << minDate;
+
+    if (!maxDate.isNull()) {
+        int daysRange = minDate.daysTo(maxDate);
+        double step = daysRange / dates.count();
+        double currentPosition = 0;
+        qDebug() << "daysRange: " << daysRange;
+        for (int i = 0; i < dates.count(); i++) {
+            *lineSeries << QPointF(currentPosition, prices[i]);
+            qDebug() << "QPountF: " << currentPosition << " " << prices[i];
+            currentPosition += step;
+        }
+
+    }
+
+    if (m_doctorLineStatChart != nullptr) {
+        delete m_doctorLineStatChart ;
+    }
+    m_doctorLineStatChart = new StatChart(this, &pageLabel);
+    m_doctorLineStatChart ->loadSeries(lineSeries);
+
+    // display charts
+    ui->verticalLayout_doctorPieChart->addWidget(m_doctorDonatStatChart);
+    ui->verticalLayout_doctorBarsChart->addWidget(m_doctorBarStatChart);
+    ui->verticalLayout_doctorLineChart->addWidget(m_doctorLineStatChart);
 }
 
 void MainWindow::updateLatestVisitsStat()

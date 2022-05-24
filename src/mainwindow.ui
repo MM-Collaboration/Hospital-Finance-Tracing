@@ -25,7 +25,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <property name="movable">
        <bool>true</bool>
@@ -270,6 +270,9 @@
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
           <property name="sortingEnabled">
            <bool>true</bool>
           </property>
@@ -375,6 +378,9 @@
           </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
           </property>
           <property name="sortingEnabled">
            <bool>true</bool>
@@ -723,13 +729,33 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="tab_charts">
+              <widget class="QWidget" name="tab_donatCharts">
                <attribute name="title">
                 <string>Круговая диаграмма</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_charts"/>
+                 <layout class="QVBoxLayout" name="verticalLayout_doctorPieChart"/>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_barsChar">
+               <attribute name="title">
+                <string>Столбовая диаграмма</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_6">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_doctorBarsChart"/>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_lineChart">
+               <attribute name="title">
+                <string>График</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_9">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_doctorLineChart"/>
                 </item>
                </layout>
               </widget>

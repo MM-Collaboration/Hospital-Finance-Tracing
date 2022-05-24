@@ -17,6 +17,8 @@
 #include <QSqlQuery>
 #include <QStringListModel>
 #include <QPieSeries>
+#include <QBarSet>
+#include <QPointF>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -94,6 +96,8 @@ private slots:
     private:
     Ui::MainWindow *ui;
     StatChart *m_doctorDonatStatChart;
+    StatChart *m_doctorBarStatChart;
+    StatChart *m_doctorLineStatChart;
 
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
