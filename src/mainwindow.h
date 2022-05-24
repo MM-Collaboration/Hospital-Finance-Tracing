@@ -54,6 +54,10 @@ public:
 
     void updatePatientVisitsStat();
 
+    void highlightWidget(QWidget *, bool);
+
+    void activateDoctorAddPushButton();
+
     protected:
 
 private slots:
@@ -66,8 +70,6 @@ private slots:
     void on_btn_add_doctor_clicked();
 
     void on_lineEdit_fullNameDoctor_textChanged();
-
-    void on_lineEdit_fullNamePatient_textChanged();
 
     void on_btn_add_appointment_clicked();
 
@@ -88,6 +90,12 @@ private slots:
     void on_comboBox_vistPatient_editTextChanged(const QString &arg1);
 
     void on_comboBox_vistDoctor_editTextChanged(const QString &arg1);
+
+    void on_lineEdit_fullNamePatient_textChanged(const QString &arg1);
+
+    void on_comboBox_doctorSpecialization_currentTextChanged(const QString &arg1);
+
+    void on_comboBox_doctorQualification_currentTextChanged(const QString &arg1);
 
     private:
     Ui::MainWindow *ui;

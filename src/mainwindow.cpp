@@ -231,14 +231,59 @@ void MainWindow::on_btn_add_doctor_clicked()
 
 void MainWindow::activatePatientAddPushButton() {
     int phoneNumberLength = ui->lineEdit_phoneNumberPatient->text().length();
-    bool validPhoneNumber = (!ui->lineEdit_phoneNumberPatient->text().isEmpty() && ((ui->lineEdit_phoneNumberPatient->text().split("")[1] == "+") ? (phoneNumberLength >= 12) : (phoneNumberLength >= 11)));
+    bool validPhoneNumber = (((ui->lineEdit_phoneNumberPatient->text().split("")[1] == "+") ? (phoneNumberLength >= 12) : (phoneNumberLength >= 11)));
     bool validFullName = !ui->lineEdit_fullNamePatient->text().isEmpty();
     bool validSnilsNumber = (!ui->lineEdit_snils->text().isEmpty() && ui->lineEdit_snils->text().length() == 11);
+    qDebug() << "validFullName: " << validFullName;
+    qDebug() << "valudSnilsNumber: " << validSnilsNumber;
+    qDebug() << "validPhoneNumber: " << validPhoneNumber;
+
     if (validFullName && validPhoneNumber && validSnilsNumber) {
         ui->btn_add_patient->setEnabled(true);
-    } else if (ui->btn_add_patient->isEnabled()) {
-        ui->btn_add_patient->setEnabled(false);
+        // clear all
+        highlightWidget(ui->lineEdit_fullNamePatient, false);
+        highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+        highlightWidget(ui->lineEdit_snils, false);
+    } else {
+        if (ui->btn_add_patient->isEnabled()) {
+            ui->btn_add_patient->setEnabled(false);
+        }
+
+        // highlight if not valid
+        if (!validFullName)
+            highlightWidget(ui->lineEdit_fullNamePatient, true);
+        else
+            highlightWidget(ui->lineEdit_fullNamePatient, false);
+
+        if (!validPhoneNumber)
+            highlightWidget(ui->lineEdit_phoneNumberPatient, true);
+        else
+            highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+
+        if (!validSnilsNumber)
+            highlightWidget(ui->lineEdit_snils, true);
+        else
+            highlightWidget(ui->lineEdit_snils, false);
+
+        // clear if all empty
+        if (ui->lineEdit_fullNamePatient->text().isEmpty() &&
+            ui->lineEdit_phoneNumberPatient->text().isEmpty() &&
+            ui->lineEdit_snils->text().isEmpty())
+        {
+            highlightWidget(ui->lineEdit_fullNamePatient, false);
+            highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+            highlightWidget(ui->lineEdit_snils, false);
+        }
     }
+
+}
+
+void MainWindow::highlightWidget(QWidget *widget, bool flag) {
+        if (flag) {
+            widget->setStyleSheet("background-color: rgb(255, 158, 160);");
+        } else {
+            widget->setStyleSheet("");
+        }
 }
 
 void MainWindow::activateVisitAddPushButton() {
@@ -253,9 +298,74 @@ void MainWindow::activateVisitAddPushButton() {
     }
     if (validDianosis && validDoctorName && validPatientName) {
         ui->btn_add_appointment->setEnabled(true);
-    } else if (ui->btn_add_appointment->isEnabled()) {
-        ui->btn_add_appointment->setEnabled(false);
+        // clear all
+        highlightWidget(ui->comboBox_vistPatient, false);
+        highlightWidget(ui->comboBox_vistDoctor, false);
+        highlightWidget(ui->lineEdit_visitDiagnosis, false);
+    } else {
+        if (ui->btn_add_appointment->isEnabled()) {
+            ui->btn_add_appointment->setEnabled(false);
+        }
+
+        // highlight if not valid
+        if (!validPatientName)
+            highlightWidget(ui->comboBox_vistPatient, true);
+        else
+            highlightWidget(ui->comboBox_vistPatient, false);
+
+        if (!validDoctorName)
+            highlightWidget(ui->comboBox_vistDoctor, true);
+        else
+            highlightWidget(ui->comboBox_vistDoctor, false);
+
+        if (!validDianosis)
+            highlightWidget(ui->lineEdit_visitDiagnosis, true);
+        else
+            highlightWidget(ui->lineEdit_visitDiagnosis, false);
+
+        // clear if all empty
+//        if (ui->lineEdit_fullNamePatient->text().isEmpty() &&
+//            ui->lineEdit_phoneNumberPatient->text().isEmpty() &&
+//            ui->lineEdit_snils->text().isEmpty())
+//        {
+//            highlightWidget(ui->lineEdit_fullNamePatient, false);
+//            highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+//            highlightWidget(ui->lineEdit_snils, false);
+//        }
     }
+   /*
+    else {
+        if (ui->btn_add_patient->isEnabled()) {
+            ui->btn_add_patient->setEnabled(false);
+        }
+
+        // highlight if not valid
+        ef (!validFullName)
+            highlightWidget(ui->lineEdit_fullNamePatient, true);
+        else
+            highlightWidget(ui->lineEdit_fullNamePatient, false);
+
+        if (!validPhoneNumber)
+            highlightWidget(ui->lineEdit_phoneNumberPatient, true);
+        else
+            highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+
+        if (!validSnilsNumber)
+            highlightWidget(ui->lineEdit_snils, true);
+        else
+            highlightWidget(ui->lineEdit_snils, false);
+
+        // clear if all empty
+        if (ui->lineEdit_fullNamePatient->text().isEmpty() &&
+            ui->lineEdit_phoneNumberPatient->text().isEmpty() &&
+            ui->lineEdit_snils->text().isEmpty())
+        {
+            highlightWidget(ui->lineEdit_fullNamePatient, false);
+            highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+            highlightWidget(ui->lineEdit_snils, false);
+        }
+    }
+    */
 }
 
 void MainWindow::on_lineEdit_visitDiagnosis_textChanged(const QString &arg1)
@@ -263,18 +373,61 @@ void MainWindow::on_lineEdit_visitDiagnosis_textChanged(const QString &arg1)
     activateVisitAddPushButton();
 }
 
-void MainWindow::on_lineEdit_fullNameDoctor_textChanged()
+void MainWindow::activateDoctorAddPushButton()
 {
-    if (ui->lineEdit_fullNameDoctor->text().isEmpty()) {
-        ui->btn_add_doctor->setEnabled(false);
-    } else if (!ui->btn_add_doctor->isEnabled()) {
+    bool validDoctorName = !ui->lineEdit_fullNameDoctor->text().isEmpty();
+    bool validQualification = false;
+    if (ui->comboBox_doctorQualification->findText(ui->comboBox_doctorQualification->currentText()) != -1) {
+        validQualification = true;
+    }
+    bool validSpecialization = false;
+    if (ui->comboBox_doctorSpecialization->findText(ui->comboBox_doctorSpecialization->currentText()) != -1) {
+        validSpecialization = true;
+    }
+    if (validDoctorName && validQualification && validSpecialization) {
         ui->btn_add_doctor->setEnabled(true);
+        // clear all
+        highlightWidget(ui->lineEdit_fullNameDoctor, false);
+        highlightWidget(ui->comboBox_doctorQualification, false);
+        highlightWidget(ui->comboBox_doctorSpecialization, false);
+    } else {
+        if (ui->btn_add_doctor->isEnabled()) {
+            ui->btn_add_doctor->setEnabled(false);
+        }
+
+        // highlight if not valid
+        if (!validDoctorName)
+            highlightWidget(ui->lineEdit_fullNameDoctor, true);
+        else
+            highlightWidget(ui->lineEdit_fullNameDoctor, false);
+
+        if (!validQualification)
+            highlightWidget(ui->comboBox_doctorQualification, true);
+        else
+            highlightWidget(ui->comboBox_doctorQualification, false);
+
+        if (!validSpecialization)
+            highlightWidget(ui->comboBox_doctorSpecialization, true);
+        else
+            highlightWidget(ui->comboBox_doctorSpecialization, false);
+/*
+        // clear if all empty
+        if (ui->lineEdit_fullNamePatient->text().isEmpty() &&
+            ui->lineEdit_phoneNumberPatient->text().isEmpty() &&
+            ui->lineEdit_snils->text().isEmpty())
+        {
+            highlightWidget(ui->lineEdit_fullNamePatient, false);
+            highlightWidget(ui->lineEdit_phoneNumberPatient, false);
+            highlightWidget(ui->lineEdit_snils, false);
+        }
+    }
+     */
     }
 }
 
-void MainWindow::on_lineEdit_fullNamePatient_textChanged()
+void MainWindow::on_lineEdit_fullNameDoctor_textChanged()
 {
-    activatePatientAddPushButton();
+    activateDoctorAddPushButton();
 }
 
 void MainWindow::on_lineEdit_phoneNumberPatient_textChanged(const QString &arg1)
@@ -797,5 +950,23 @@ void MainWindow::on_comboBox_vistPatient_editTextChanged(const QString &arg1)
 void MainWindow::on_comboBox_vistDoctor_editTextChanged(const QString &arg1)
 {
     activateVisitAddPushButton();
+}
+
+
+void MainWindow::on_lineEdit_fullNamePatient_textChanged(const QString &arg1)
+{
+    activatePatientAddPushButton();
+}
+
+
+void MainWindow::on_comboBox_doctorSpecialization_currentTextChanged(const QString &arg1)
+{
+    activateDoctorAddPushButton();
+}
+
+
+void MainWindow::on_comboBox_doctorQualification_currentTextChanged(const QString &arg1)
+{
+    activateDoctorAddPushButton();
 }
 
