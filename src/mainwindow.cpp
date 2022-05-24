@@ -242,7 +242,16 @@ void MainWindow::activatePatientAddPushButton() {
 }
 
 void MainWindow::activateVisitAddPushButton() {
-    if (!ui->lineEdit_visitDiagnosis->text().isEmpty()) {
+    bool validDianosis = (!ui->lineEdit_visitDiagnosis->text().isEmpty());
+    bool validPatientName = false;
+    if (ui->comboBox_vistPatient->findText(ui->comboBox_vistPatient->currentText()) != -1) {
+        validPatientName = true;
+    }
+    bool validDoctorName = false;
+    if (ui->comboBox_vistDoctor->findText(ui->comboBox_vistDoctor->currentText()) != -1) {
+        validDoctorName = true;
+    }
+    if (validDianosis && validDoctorName && validPatientName) {
         ui->btn_add_appointment->setEnabled(true);
     } else if (ui->btn_add_appointment->isEnabled()) {
         ui->btn_add_appointment->setEnabled(false);
@@ -776,5 +785,17 @@ void MainWindow::on_pushButton_statUpdate_clicked()
 void MainWindow::on_lineEdit_snils_textChanged(const QString &arg1)
 {
     activatePatientAddPushButton();
+}
+
+
+void MainWindow::on_comboBox_vistPatient_editTextChanged(const QString &arg1)
+{
+    activateVisitAddPushButton();
+}
+
+
+void MainWindow::on_comboBox_vistDoctor_editTextChanged(const QString &arg1)
+{
+    activateVisitAddPushButton();
 }
 

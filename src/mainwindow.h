@@ -85,6 +85,10 @@ private slots:
 
     void on_lineEdit_snils_textChanged(const QString &arg1);
 
+    void on_comboBox_vistPatient_editTextChanged(const QString &arg1);
+
+    void on_comboBox_vistDoctor_editTextChanged(const QString &arg1);
+
     private:
     Ui::MainWindow *ui;
     StatChart *m_doctorDonatStatChart;
