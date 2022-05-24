@@ -976,8 +976,8 @@
     <property name="title">
      <string>&amp;Справка</string>
     </property>
-    <addaction name="action_aboutQt"/>
     <addaction name="action_about"/>
+    <addaction name="action_aboutQt"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
