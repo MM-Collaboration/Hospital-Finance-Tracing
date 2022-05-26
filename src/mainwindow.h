@@ -1,7 +1,8 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "connectdatabasedialog.h"
+//#include "connectdatabasedialog.h"
+#include "statchart.h"
 
 #include <QMainWindow>
 #include <QMessageBox>
@@ -15,6 +16,10 @@
 #include <QStandardItem>
 #include <QSqlQuery>
 #include <QStringListModel>
+#include <QPieSeries>
+#include <QBarSet>
+#include <QPointF>
+#include <QDate>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,39 +34,42 @@ public:
     ~MainWindow();
 
     bool createConnection();
-    void loadDatabase();
     void reloadTableDoctors();
     void reloadTablePatients();
     void reloadTableVisits();
     void loadDoctorsSpecializationComboBox();
     void loadDoctorsQualificationComboBox();
 
-    void doctorsSubmit();
-    void updateStatDoctorsCheckBox();
-
     void activatePatientAddPushButton();
     void activateVisitAddPushButton();
-
-    void updateStatAllList(QStringList &);
     
-protected:
+    void updateStatDoctorsCheckBox();
+    void updateStatPatientsCheckBox();
+
+    void updateDoctorStat();
+
+    void updateLastPatientsVisits();
+
+    void updateLatestVisitsStat();
+
+    void updatePatientVisitsStat();
+
+    void highlightWidget(QWidget *, bool);
+
+    void activateDoctorAddPushButton();
+
+    protected:
 
 private slots:
     // Actions
     void actionOpenFile();
     void actionAbout();
 
-//    void submit();
-
     void on_btn_add_patient_clicked();
-
-    void on_btn_edit_patient_clicked();
 
     void on_btn_add_doctor_clicked();
 
     void on_lineEdit_fullNameDoctor_textChanged();
-
-    void on_lineEdit_fullNamePatient_textChanged();
 
     void on_btn_add_appointment_clicked();
 
@@ -77,20 +85,35 @@ private slots:
 
     void on_lineEdit_visitDiagnosis_textChanged(const QString &arg1);
 
-private:
+    void on_lineEdit_snils_textChanged(const QString &arg1);
+
+    void on_comboBox_vistPatient_editTextChanged(const QString &arg1);
+
+    void on_comboBox_vistDoctor_editTextChanged(const QString &arg1);
+
+    void on_lineEdit_fullNamePatient_textChanged(const QString &arg1);
+
+    void on_comboBox_doctorSpecialization_currentTextChanged(const QString &arg1);
+
+    void on_comboBox_doctorQualification_currentTextChanged(const QString &arg1);
+
+    private:
     Ui::MainWindow *ui;
+    StatChart *m_doctorDonatStatChart;
+    StatChart *m_doctorBarStatChart;
+    StatChart *m_doctorLineStatChart;
+
+    StatChart *m_patientDonatStatChart;
+    StatChart *m_patientBarStatChart;
+    StatChart *m_patientLineStatChart;
 
     QPushButton *btnStat;
     QPushButton *btnAddDoctor;
-    int *statModelIndex = 0;
     QStringListModel *statListModel;
-    QModelIndex *statModel;
     QSqlTableModel *doctorsModel;
     QSqlTableModel *patientsModel;
     QSqlRelationalTableModel *visitsModel;
     QSqlDatabase db;
-
-    double *statPriceList;
 
     // Regular expresions
     QRegExp *fullNameRegExp;

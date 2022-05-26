@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="checkMarkTrue">object-select-symbolic.symbolic.png</file>
+        <file alias="checkMarkFalse">process-stop-symbolic.symbolic.png</file>
+    </qresource>
+</RCC>

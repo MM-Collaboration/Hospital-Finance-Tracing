@@ -6,6 +6,12 @@
 #include <QtCharts/QChartGlobal>
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QLogValueAxis>
+#include <QtCharts/QValueAxis>
 
 class PenTool;
 class BrushTool;
@@ -23,14 +29,22 @@ class StatChart : public QWidget
 {
         Q_OBJECT
     public:
-        explicit StatChart(QWidget *parent = nullptr);
+        explicit StatChart(QWidget *parent = nullptr, QString *title = nullptr);
+
+        void loadSeries(QAbstractSeries *);
+        void loadSeries(QLineSeries *);
+
+        struct Pie_t {
+            QString name;
+            float value;
+        };
 
     signals:
 
     private:
         QChartView *m_chartView;
-        QPieSeries *m_series;
-        QPieSlice *m_slice;
+        QAbstractSeries *m_series;
+        QChart *m_chart;
 
 };
 
