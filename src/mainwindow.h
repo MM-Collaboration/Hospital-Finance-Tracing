@@ -58,7 +58,8 @@ public:
 
     void activateDoctorAddPushButton();
 
-    protected:
+    double getDoctorPaymentSummary(int doctorId);
+protected:
 
 private slots:
     // Actions

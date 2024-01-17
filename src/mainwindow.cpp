@@ -574,6 +574,19 @@ void MainWindow::updateStatPatientsCheckBox()
     }
 }
 
+double MainWindow::getDoctorPaymentSummary(int doctorId) {
+    QSqlQuery query;
+    query.prepare("SELECT GetDoctorPaymentSummary(:doctorId)");
+    query.bindValue(":doctorId", doctorId);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toDouble();
+    }
+
+    return 0.0;  // Return 0 if there is an error or no result
+}
+
+
 void MainWindow::updateDoctorStat()
 {
     QVector<int> patients_id;
@@ -652,11 +665,13 @@ void MainWindow::updateDoctorStat()
     QString doctorFullName = ui->comboBox_statDoctor->currentText();
     QString pageLabel = QStringLiteral("Приёмы %1").arg(doctorFullName);
     ui->label_doctorVisits->setText(pageLabel);
-    double paidTotal = 0;
-    for (double price: prices) paidTotal += price;
+    double paidTotal = getDoctorPaymentSummary(doctor_id);
     QString statReviewStr = QStringLiteral("Врач: %1\n"
                                            "Количество приёмов: %2\n"
-                                           "Общая стоимость приёмов: %3").arg(doctorFullName).arg(patientsName.count()).arg(paidTotal);
+                                           "Общая стоимость приёмов: %3")
+                                            .arg(doctorFullName)
+                                            .arg(patientsName.count())
+                                            .arg(paidTotal);
     ui->textBrowser_statReview->setText(statReviewStr);
 
     // fill donat chart
