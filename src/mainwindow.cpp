@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "qsqlerror.h"
 #include "statchart.h"
 #include "ui_mainwindow.h"
 
@@ -75,26 +76,52 @@ bool MainWindow::createConnection() {
 
 void MainWindow::loadDoctorsSpecializationComboBox() {
     // set doctors specialization in combobox
-    QSqlQuery query("SELECT specialization FROM doctors_specializations");
-    while (ui->comboBox_doctorSpecialization->count() != 0) { // claer comboBox
+    QSqlQuery query("SELECT id, specialization FROM doctors_specializations");
+    while (ui->comboBox_doctorSpecialization->count() != 0) { // clear comboBox
         ui->comboBox_doctorSpecialization->removeItem(0);
     }
     while (query.next()) {
-        QString specialization = query.value(0).toString();
-        ui->comboBox_doctorSpecialization->addItem(specialization);
+        int id = query.value(0).toInt();
+        QString specialization = query.value(1).toString();
+        ui->comboBox_doctorSpecialization->addItem(specialization, id);
     }
 }
 
 void MainWindow::loadDoctorsQualificationComboBox() {
-    // set doctors qualifiation in combobox
-    QSqlQuery query("SELECT qualification FROM doctors_qualifications");
-    while (ui->comboBox_doctorQualification->count() != 0) { // claer comboBox
+    // set doctors qualification in combobox
+    QSqlQuery query("SELECT id, qualification FROM doctors_qualifications");
+    while (ui->comboBox_doctorQualification->count() != 0) { // clear comboBox
         ui->comboBox_doctorQualification->removeItem(0);
     }
     while (query.next()) {
-        QString qualification = query.value(0).toString();
-        ui->comboBox_doctorQualification->addItem(qualification);
+        int id = query.value(0).toInt();
+        QString qualification = query.value(1).toString();
+        ui->comboBox_doctorQualification->addItem(qualification, id);
     }
+}
+
+QString getSpecializationString(int specializationId) {
+    QSqlQuery query;
+    query.prepare("SELECT specialization FROM doctors_specializations WHERE id = :id");
+    query.bindValue(":id", specializationId);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toString();
+    }
+
+    return QString();  // Return an empty string if there is an error or no result
+}
+
+QString getQualificationString(int qualificationId) {
+    QSqlQuery query;
+    query.prepare("SELECT qualification FROM doctors_qualifications WHERE id = :id");
+    query.bindValue(":id", qualificationId);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toString();
+    }
+
+    return QString();  // Return an empty string if there is an error or no result
 }
 
 void MainWindow::reloadTableDoctors() {
@@ -109,6 +136,18 @@ void MainWindow::reloadTableDoctors() {
     doctorsModel->setHeaderData(2, Qt::Horizontal, tr("Специализация"));
     doctorsModel->setHeaderData(3, Qt::Horizontal, tr("Квалификация"));
     ui->tableView_doctors->hideColumn(0);
+
+    // Additional code to replace specialization_id and qualification_id with their string representations
+    for (int row = 0; row < doctorsModel->rowCount(); ++row) {
+        int specializationId = doctorsModel->data(doctorsModel->index(row, 2)).toInt();
+        int qualificationId = doctorsModel->data(doctorsModel->index(row, 3)).toInt();
+
+        QString specialization = getSpecializationString(specializationId);
+        QString qualification = getQualificationString(qualificationId);
+
+        doctorsModel->setData(doctorsModel->index(row, 2), specialization);
+        doctorsModel->setData(doctorsModel->index(row, 3), qualification);
+    }
 
     ui->tableView_doctors->setModel(doctorsModel);
     ui->tableView_doctors->setColumnHidden(0, true);
@@ -217,17 +256,26 @@ void MainWindow::on_btn_add_patient_clicked()
 void MainWindow::on_btn_add_doctor_clicked()
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO doctors (name, specialization, qualification) "
-                  "VALUES (:name, :specialization, :qualification)");
+
+            // Get the specialization ID
+    int specializationId = getSpecializationId(ui->comboBox_doctorSpecialization->currentText());
+
+            // Get the qualification ID
+    int qualificationId = getQualificationId(ui->comboBox_doctorQualification->currentText());
+
+    query.prepare("INSERT INTO doctors (name, specialization_id, qualification_id) "
+        "VALUES (:name, :specializationId, :qualificationId)");
     query.bindValue(":name", ui->lineEdit_fullNameDoctor->text());
-    query.bindValue(":specialization", ui->comboBox_doctorSpecialization->currentText());
-    query.bindValue(":qualification", ui->comboBox_doctorQualification->currentText());
-    query.exec();
-    ui->lineEdit_fullNameDoctor->clear();
-    reloadTableDoctors();
+    query.bindValue(":specializationId", specializationId);
+    query.bindValue(":qualificationId", qualificationId);
 
-    doctorsModel->select();
-
+    if (query.exec()) {
+        ui->lineEdit_fullNameDoctor->clear();
+        reloadTableDoctors();
+    } else {
+        // Handle the error, e.g., display an error message
+        qDebug() << "Error inserting doctor:" << query.lastError().text();
+    }
 }
 
 void MainWindow::activatePatientAddPushButton() {
@@ -480,8 +528,17 @@ void MainWindow::on_btn_add_appointment_clicked()
 void MainWindow::on_tableView_patients_clicked(const QModelIndex &index)
 {
     ui->lineEdit_fullNamePatient->setText(index.sibling(index.row(), 1).data().toString());
-//    ui->dateEdit_yearOfBirthPatient->setDate(index.sibling(index.row(), 2).data().toDate());
-//    qDebug() << "index.sibling(index.row(), 1).data().toDate()): " << QString("12-12-" + index.sibling(index.row(), 2).data().toString());
+
+    QString dateStr = index.sibling(index.row(), 2).data().toString();
+
+    QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
+
+    if (date.isValid()) {
+        ui->dateEdit_yearOfBirthPatient->setDate(date);
+    } else {
+        qDebug() << "Invalid date format:" << dateStr;
+    }
+
     ui->lineEdit_snils->setText(index.sibling(index.row(), 4).data().toString());
 
     QString phone_number = index.sibling(index.row(), 3).data().toString();
@@ -499,16 +556,8 @@ void MainWindow::on_tableView_doctors_clicked(const QModelIndex &index)
 {
     ui->lineEdit_fullNameDoctor->setText(index.sibling(index.row(), 1).data().toString());
 
-    int specialization_index = ui->comboBox_doctorSpecialization->findText(index.sibling(index.row(), 2).data().toString());
-    if (specialization_index != -1) { // -1 for not found
-        ui->comboBox_doctorSpecialization->setCurrentIndex(specialization_index );
-    }
-
-    int qualification_index = ui->comboBox_doctorQualification->findText(index.sibling(index.row(), 2).data().toString());
-    if (qualification_index != -1) { // -1 for not found
-        ui->comboBox_doctorSpecialization->setCurrentIndex(qualification_index);
-    }
-
+    loadDoctorsQualificationComboBox();
+    loadDoctorsSpecializationComboBox();
 }
 
 void MainWindow::on_tableView_visits_clicked(const QModelIndex &index)
@@ -949,6 +998,31 @@ void MainWindow::on_pushButton_statUpdate_clicked()
     updateLatestVisitsStat();
     updatePatientVisitsStat();
 
+}
+
+
+int MainWindow::getSpecializationId(const QString &specialization) {
+    QSqlQuery query;
+    query.prepare("SELECT id FROM doctors_specializations WHERE specialization = :specialization");
+    query.bindValue(":specialization", specialization);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toInt();
+    }
+
+    return -1;  // Return -1 if there is an error or no result
+}
+
+int MainWindow::getQualificationId(const QString &qualification) {
+    QSqlQuery query;
+    query.prepare("SELECT id FROM doctors_qualifications WHERE qualification = :qualification");
+    query.bindValue(":qualification", qualification);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toInt();
+    }
+
+    return -1;  // Return -1 if there is an error or no result
 }
 
 void MainWindow::on_lineEdit_snils_textChanged(const QString &arg1)

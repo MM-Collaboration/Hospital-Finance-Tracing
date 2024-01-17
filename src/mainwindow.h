@@ -59,6 +59,8 @@ public:
     void activateDoctorAddPushButton();
 
     double getDoctorPaymentSummary(int doctorId);
+    int getSpecializationId(const QString &specialization);
+    int getQualificationId(const QString &qualification);
 protected:
 
 private slots:
