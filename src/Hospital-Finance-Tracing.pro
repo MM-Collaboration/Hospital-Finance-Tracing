@@ -21,14 +21,7 @@ HEADERS += \
 
 FORMS += \
     connectdatabasedialog.ui \
-    mainwindow.ui \
-    ui_base/add_diolog.ui \
-    ui_base/add_doctor_diolog.ui \
-    ui_base/edit_diolog.ui \
-    ui_base/registratura_main_window.ui \
-    ui_base/stat.ui \
-    ui_base/stat_diolog.ui
-
+    mainwindow.ui
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
